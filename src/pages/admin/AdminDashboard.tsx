@@ -51,9 +51,9 @@ const AdminDashboard: React.FC = () => {
     { 
       name: 'Issue Certificate', 
       description: 'Create and issue a new digital certificate',
-      icon: <Plus className="h-8 w-8 text-white" />,
+      icon: <Plus className="h-8 w-8 text-white-600" />,
       action: () => navigate('/admin/certificates/new'),
-      primary: true,
+      // primary: true,
     },
     { 
       name: 'Manage Templates', 
@@ -125,20 +125,20 @@ const AdminDashboard: React.FC = () => {
         {quickActions.map((action) => (
           <Card 
             key={action.name} 
-            className={`hover:shadow-lg transition-shadow ${action.primary ? 'bg-blue-600 text-white' : 'bg-white'}`}
+            className="hover:shadow-lg transition-shadow bg-white"
             hover
           >
             <div 
               className="p-5 flex flex-col h-full cursor-pointer"
               onClick={action.action}
             >
-              <div className={`flex-shrink-0 mb-4 ${action.primary ? '' : 'rounded-full bg-blue-100 p-3 inline-flex w-min'}`}>
+              <div className="flex-shrink-0 mb-4 rounded-full bg-blue-100 p-3 inline-flex w-min">
                 {action.icon}
               </div>
-              <h3 className={`text-lg font-medium ${action.primary ? 'text-white' : 'text-gray-900'}`}>
+              <h3 className="text-lg font-medium text-gray-900">
                 {action.name}
               </h3>
-              <p className={`mt-2 text-sm ${action.primary ? 'text-blue-100' : 'text-gray-500'}`}>
+              <p className="mt-2 text-sm text-gray-500">
                 {action.description}
               </p>
             </div>

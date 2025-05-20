@@ -183,10 +183,9 @@ const Home: React.FC = () => {
               </Button>
             </Link>
             <Link to="/login">
-              <Button 
-                variant="outline" 
+              <Button
                 size="lg" 
-                className="text-white border-white hover:bg-blue-600 hover:border-transparent transition-all duration-200"
+                className="bg-white border-white hover:bg-blue-600 hover:border-transparent transition-all duration-200"
               >
                 Sign in
               </Button>

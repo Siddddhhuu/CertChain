@@ -11,6 +11,9 @@ import CertificateDetail from './pages/certificates/CertificateDetail';
 import VerifyCertificate from './pages/certificates/VerifyCertificate';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import IssueCertificate from './pages/admin/IssueCertificate';
+import Template from './pages/admin/Template';
+import Recipients from './pages/admin/Recipients';
+import WalletPage from './pages/admin/Wallet';
 
 // Auth Guard component to protect routes
 const PrivateRoute = ({ children, requiredRole }: { children: JSX.Element, requiredRole?: string }) => {
@@ -79,6 +82,30 @@ function App() {
                   element={
                     <PrivateRoute requiredRole="admin">
                       <IssueCertificate />
+                    </PrivateRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin/templates" 
+                  element={
+                    <PrivateRoute requiredRole="admin">
+                      <Template />
+                    </PrivateRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin/recipients" 
+                  element={
+                    <PrivateRoute requiredRole="admin">
+                      <Recipients />
+                    </PrivateRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin/wallet" 
+                  element={
+                    <PrivateRoute requiredRole="admin">
+                      <WalletPage />
                     </PrivateRoute>
                   } 
                 />
