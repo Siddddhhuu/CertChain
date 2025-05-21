@@ -19,19 +19,35 @@ const CertificateList: React.FC = () => {
   const navigate = useNavigate();
   
   useEffect(() => {
-    certificateService.getCertificates().then(data => {
-      setCertificates(data);
-      setIsLoading(false);
-    });
-  }, []);
+    const fetchCertificates = async () => {
+      try {
+        setIsLoading(true);
+        const data = await certificateService.getCertificates();
+        // Filter certificates by recipient email
+        const userEmail = authState.user?.email;
+        const filteredData = userEmail 
+          ? data.filter(cert => cert.recipientEmail === userEmail)
+          : data;
+        setCertificates(filteredData);
+      } catch (error) {
+        console.error('Error fetching certificates:', error);
+        // You might want to show an error message to the user here
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCertificates();
+  }, [authState.user?.email]); // Add dependency on user email
   
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
   
   const filteredCertificates = certificates.filter(cert => 
-  cert.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  cert.institutionName?.toLowerCase().includes(searchTerm.toLowerCase())
+    cert.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    cert.recipientName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    cert.institutionName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleViewCertificate = (id: string) => {

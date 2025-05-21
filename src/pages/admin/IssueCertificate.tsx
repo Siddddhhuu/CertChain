@@ -54,13 +54,16 @@ const IssueCertificate: React.FC = () => {
           email: data.recipientEmail,
           walletAddress: data.recipientWalletAddress,
         },
-        issuer: authState.user?.id, // or whatever field is the user id
-        // template: selectedTemplateId, // If you have templates, add this
+        issuer: authState.user?.id,
         issuedAt: data.issueDate ? new Date(data.issueDate) : new Date(),
         expiresAt: data.expiryDate ? new Date(data.expiryDate) : undefined,
-        title: data.title,
-        description: data.description,
-        // Add any other fields your backend expects
+        status: 'issued' as const,
+        metadata: {
+          title: data.title,
+          description: data.description,
+          institutionName: data.institutionName || 'Default Institution',
+          institutionId: data.institutionId || 'INST-001',
+        }
       };
       
       // Issue the certificate
@@ -70,7 +73,7 @@ const IssueCertificate: React.FC = () => {
       
       // Navigate to the certificate detail after a short delay
       setTimeout(() => {
-        navigate(`/certificates/${certificate.id || certificate._id}`);
+        navigate(`/certificates/${certificate.id}`);
       }, 2000);
     } catch (err) {
       console.error('Error issuing certificate:', err);
