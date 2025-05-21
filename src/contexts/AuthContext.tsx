@@ -1,9 +1,16 @@
+declare global {
+  interface Window {
+    ethereum?: any;
+  }
+}
+
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { User, AuthState } from "../types";
 
 interface AuthContextProps {
   authState: AuthState;
   login: (email: string, password: string) => Promise<void>;
+  signup: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   connectWallet: () => Promise<void>;
 }
@@ -18,39 +25,81 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     error: null,
   });
 
-  // Mock functions for the MVP
   const login = async (email: string, password: string) => {
     try {
       setAuthState((prev) => ({ ...prev, isLoading: true, error: null }));
-      
-      // Mock login - would be replaced with actual API call
-      const mockUser: User = {
-        id: "1",
-        name: email.split("@")[0],
-        email,
-        role: email.includes("admin") ? "admin" : "user",
-      };
-      
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      localStorage.setItem("user", JSON.stringify(mockUser));
+
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Login failed");
+      }
+
+      const data = await response.json();
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
       setAuthState({
-        user: mockUser,
+        user: data.user,
         isAuthenticated: true,
         isLoading: false,
         error: null,
       });
-    } catch (error) {
+    } catch (error: any) {
       setAuthState((prev) => ({
         ...prev,
         isLoading: false,
-        error: "Invalid credentials",
+        error: error.message || "Invalid credentials",
       }));
     }
   };
 
+  const signup = async (name: string, email: string, password: string) => {
+    try {
+      setAuthState((prev) => ({ ...prev, isLoading: true, error: null }));
+
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Signup failed");
+      }
+
+      const data = await response.json();
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      setAuthState({
+        user: data.user,
+        isAuthenticated: true,
+        isLoading: false,
+        error: null,
+      });
+    } catch (error: any) {
+      setAuthState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: error.message || "Failed to create account",
+      }));
+      throw error;
+    }
+  };
+
   const logout = () => {
+    localStorage.removeItem("token");
     localStorage.removeItem("user");
     setAuthState({
       user: null,
@@ -62,12 +111,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const connectWallet = async () => {
     try {
-      // Check if MetaMask is installed
       if (!window.ethereum) {
         throw new Error("MetaMask is not installed");
       }
 
-      // Request account access
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts",
       });
@@ -76,7 +123,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw new Error("No accounts found");
       }
 
-      // Update user with wallet address
       if (authState.user) {
         const updatedUser = {
           ...authState.user,
@@ -98,10 +144,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    // Check if user is already logged in
     const savedUser = localStorage.getItem("user");
-    
-    if (savedUser) {
+    const token = localStorage.getItem("token");
+
+    if (savedUser && token) {
       try {
         const parsedUser = JSON.parse(savedUser) as User;
         setAuthState({
@@ -113,6 +159,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } catch (error) {
         console.error("Error parsing user data:", error);
         localStorage.removeItem("user");
+        localStorage.removeItem("token");
         setAuthState({
           user: null,
           isAuthenticated: false,
@@ -126,7 +173,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ authState, login, logout, connectWallet }}>
+    <AuthContext.Provider value={{ authState, login, signup, logout, connectWallet }}>
       {children}
     </AuthContext.Provider>
   );
@@ -134,10 +181,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  
+
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
-  
+
   return context;
 };

@@ -15,31 +15,29 @@ interface SignupFormValues {
 }
 
 const Signup: React.FC = () => {
-  const { login, authState } = useAuth();
+  const { signup, authState } = useAuth();
   const navigate = useNavigate();
   const [signupError, setSignupError] = useState<string | null>(null);
-  
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
   } = useForm<SignupFormValues>();
-  
+
   const password = watch('password');
-  
+
   const onSubmit = async (data: SignupFormValues) => {
     try {
       setSignupError(null);
-      // In a real application, you would call a signup API endpoint here
-      // For demo purposes, we'll just log in the user
-      await login(data.email, data.password);
-      navigate('/certificates');
+      await signup(data.name, data.email, data.password);
+      navigate('/login');
     } catch (error) {
       setSignupError('Failed to create account. Please try again.');
     }
   };
-  
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
@@ -54,7 +52,7 @@ const Signup: React.FC = () => {
             Sign up to manage your certificates
           </p>
         </CardHeader>
-        
+
         <Card>
           <CardContent>
             {signupError && (
@@ -62,7 +60,7 @@ const Signup: React.FC = () => {
                 {signupError}
               </div>
             )}
-            
+
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <Input
                 label="Full Name"
@@ -73,7 +71,7 @@ const Signup: React.FC = () => {
                   required: 'Name is required',
                 })}
               />
-              
+
               <Input
                 label="Email"
                 type="email"
@@ -88,7 +86,7 @@ const Signup: React.FC = () => {
                   },
                 })}
               />
-              
+
               <Input
                 label="Password"
                 type="password"
@@ -103,7 +101,7 @@ const Signup: React.FC = () => {
                   },
                 })}
               />
-              
+
               <Input
                 label="Confirm Password"
                 type="password"
@@ -116,7 +114,7 @@ const Signup: React.FC = () => {
                     value === password || 'Passwords do not match',
                 })}
               />
-              
+
               <div>
                 <Button
                   type="submit"
@@ -129,7 +127,7 @@ const Signup: React.FC = () => {
                 </Button>
               </div>
             </form>
-            
+
             <div className="mt-6">
               <div className="text-center text-sm">
                 <span className="text-gray-600">
