@@ -9,6 +9,7 @@ import { Certificate } from '../../types';
 import { generateMockCertificates } from '../../utils/mockData';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { certificateService } from '../../services/certificate';
 
 const CertificateList: React.FC = () => {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
@@ -17,34 +18,22 @@ const CertificateList: React.FC = () => {
   const { authState } = useAuth();
   const navigate = useNavigate();
   
-  // Mock data loading
   useEffect(() => {
-    const loadCertificates = async () => {
-      try {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        const mockCertificates = generateMockCertificates(5, authState.user?.id || '1');
-        setCertificates(mockCertificates);
-      } catch (error) {
-        console.error('Error loading certificates:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    loadCertificates();
-  }, [authState.user]);
+    certificateService.getCertificates().then(data => {
+      setCertificates(data);
+      setIsLoading(false);
+    });
+  }, []);
   
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
   
   const filteredCertificates = certificates.filter(cert => 
-    cert.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    cert.institutionName.toLowerCase().includes(searchTerm.toLowerCase())
+  cert.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  cert.institutionName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
+
   const handleViewCertificate = (id: string) => {
     navigate(`/certificates/${id}`);
   };
@@ -132,10 +121,10 @@ const CertificateList: React.FC = () => {
               leftIcon={<RefreshCw className="h-5 w-5" />}
               onClick={() => {
                 setIsLoading(true);
-                setTimeout(() => {
-                  setCertificates(generateMockCertificates(5, authState.user?.id || '1'));
+                certificateService.getCertificates().then(data => {
+                  setCertificates(data);
                   setIsLoading(false);
-                }, 1000);
+                });
               }}
             >
               Refresh

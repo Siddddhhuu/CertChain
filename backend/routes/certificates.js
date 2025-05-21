@@ -1,5 +1,6 @@
 import express from 'express';
 import auth from '../middleware/auth.js';
+import adminAuth from '../middleware/adminAuth.js';
 import {
   createCertificate,
   getCertificates,
@@ -11,9 +12,9 @@ import {
 const router = express.Router();
 
 router.get('/', auth, getCertificates);
-router.post('/', auth, createCertificate);
+router.post('/', adminAuth, createCertificate);
 router.get('/:id', auth, getCertificate);
-router.put('/:id', auth, updateCertificate);
-router.delete('/:id', auth, deleteCertificate);
+router.put('/:id', adminAuth, updateCertificate);
+router.delete('/:id', adminAuth, deleteCertificate);
 
 export default router;

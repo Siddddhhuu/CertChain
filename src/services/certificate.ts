@@ -1,69 +1,49 @@
+import axios from 'axios';
 import { Certificate } from '../types';
 import { certificateContract } from './contract';
 import { generateMockCertificate } from '../utils/mockData';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
+const API_URL = '/api/certificates'; // Adjust if your backend route is different
+
 // Mock database for local development
 let mockCertificates: Certificate[] = [];
 
 export const certificateService = {
   // Get all certificates for a user
-  async getCertificates(userId: string): Promise<Certificate[]> {
-    // In a real application, this would be an API call
-    // For now, return mock data if available or generate new ones
-    if (mockCertificates.length === 0) {
-      mockCertificates = Array.from({ length: 5 }, () => generateMockCertificate(userId));
-    }
-    return mockCertificates;
+  async getCertificates(): Promise<Certificate[]> {
+    const res = await axios.get(API_URL, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+    return res.data;
   },
 
   // Get a single certificate by ID
   async getCertificateById(id: string): Promise<Certificate | null> {
-    // In a real application, this would be an API call
-    const certificate = mockCertificates.find(cert => cert.id === id);
-    return certificate || null;
+    if (!id) {
+      throw new Error('Certificate ID is required');
+    }
+    
+    try {
+      const res = await axios.get(`${API_URL}/${id}`, { 
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } 
+      });
+      const cert = res.data;
+      return { ...cert, id: cert.id || cert._id };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 404) {
+          return null;
+        }
+        throw new Error(error.response?.data?.message || 'Failed to fetch certificate');
+      }
+      throw error;
+    }
   },
 
   // Issue a new certificate
-  async issueCertificate(certificateData: Omit<Certificate, 'id' | 'transactionHash' | 'status' | 'verificationCode' | 'ipfsHash' | 'credentialId'>): Promise<Certificate> {
-    // Generate certificate ID and verification code
-    const id = Math.random().toString(36).substring(2, 12);
-    const verificationCode = Math.random().toString(36).substring(2, 14);
-    const credentialId = `CERT-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-    const ipfsHash = `Qm${Array.from({ length: 44 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}`;
-    
-    // Create the certificate object
-    const newCertificate: Certificate = {
-      ...certificateData,
-      id,
-      credentialId,
-      ipfsHash,
-      status: 'issued',
-      verificationCode,
-      metadata: {
-        courseLength: '6 months',
-        creditHours: 120,
-        grade: 'A',
-      }
-    };
-    
-    try {
-      // In a real app, this would issue the certificate on the blockchain
-      // For demo, use the mock function
-      const txHash = certificateContract.mockIssueCertificate();
-      
-      // Update the certificate with the transaction hash
-      newCertificate.transactionHash = txHash;
-      
-      // Add to mock database
-      mockCertificates.push(newCertificate);
-      
-      return newCertificate;
-    } catch (error) {
-      console.error('Error issuing certificate:', error);
-      throw new Error('Failed to issue certificate');
-    }
+  async issueCertificate(certificateData: Partial<Certificate>): Promise<Certificate> {
+    const res = await axios.post(API_URL, certificateData, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+    return res.data;
   },
 
   // Revoke a certificate

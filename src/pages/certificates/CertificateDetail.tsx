@@ -19,7 +19,11 @@ const CertificateDetail: React.FC = () => {
   
   useEffect(() => {
     const loadCertificate = async () => {
-      if (!id) return;
+      if (!id) {
+        setError('Certificate ID is missing');
+        setIsLoading(false);
+        return;
+      }
       
       try {
         setIsLoading(true);
@@ -36,7 +40,7 @@ const CertificateDetail: React.FC = () => {
         setShareUrl(`${window.location.origin}/verify/${cert.verificationCode}`);
       } catch (err) {
         console.error('Error loading certificate:', err);
-        setError('Failed to load certificate');
+        setError(err instanceof Error ? err.message : 'Failed to load certificate');
       } finally {
         setIsLoading(false);
       }

@@ -13,7 +13,24 @@ export const createCertificate = async (req, res) => {
 export const getCertificates = async (req, res) => {
   try {
     const certs = await Certificate.find().populate('issuer template');
-    res.json(certs);
+    // Transform the data structure to match frontend expectations
+    const transformedCerts = certs.map(cert => ({
+      ...cert.toObject(),
+      recipientName: cert.recipient?.name,
+      recipientEmail: cert.recipient?.email,
+      recipientWalletAddress: cert.recipient?.walletAddress,
+      title: cert.metadata?.title,
+      description: cert.metadata?.description,
+      institutionName: cert.metadata?.institutionName,
+      institutionId: cert.metadata?.institutionId,
+      issuedOn: cert.issuedAt,
+      credentialId: cert.code,
+      verificationCode: cert.code,
+      transactionHash: cert.blockchainTx,
+      status: cert.status,
+      metadata: cert.metadata
+    }));
+    res.json(transformedCerts);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -23,7 +40,26 @@ export const getCertificate = async (req, res) => {
   try {
     const cert = await Certificate.findById(req.params.id).populate('issuer template');
     if (!cert) return res.status(404).json({ message: 'Certificate not found' });
-    res.json(cert);
+    
+    // Transform the data structure to match frontend expectations
+    const transformedCert = {
+      ...cert.toObject(),
+      recipientName: cert.recipient?.name,
+      recipientEmail: cert.recipient?.email,
+      recipientWalletAddress: cert.recipient?.walletAddress,
+      title: cert.metadata?.title,
+      description: cert.metadata?.description,
+      institutionName: cert.metadata?.institutionName,
+      institutionId: cert.metadata?.institutionId,
+      issuedOn: cert.issuedAt,
+      credentialId: cert.code,
+      verificationCode: cert.code,
+      transactionHash: cert.blockchainTx,
+      status: cert.status,
+      metadata: cert.metadata
+    };
+    
+    res.json(transformedCert);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

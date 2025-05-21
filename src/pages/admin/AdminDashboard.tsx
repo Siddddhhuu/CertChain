@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Certificate } from '../../types';
 import { certificateService } from '../../services/certificate';
 import Button from '../../components/common/Button';
+import RecentCertificates from './RecentCertificates';
 import Card, { CardHeader, CardTitle, CardContent } from '../../components/common/Card';
 import { Plus, Users, FileText as CertIcon, Shield, Wallet, User, BarChart } from 'lucide-react';
 
@@ -145,7 +146,7 @@ const AdminDashboard: React.FC = () => {
           </Card>
         ))}
       </div>
-      
+      <RecentCertificates />
       {/* Recent Activity */}
       <div className="bg-white rounded-lg shadow overflow-hidden mb-8">
         <div className="px-6 py-5 border-b border-gray-200">
@@ -191,8 +192,8 @@ const AdminDashboard: React.FC = () => {
         <div className="bg-white shadow overflow-hidden sm:rounded-md">
           <ul role="list" className="divide-y divide-gray-200">
             {certificates.slice(0, 5).map((certificate) => (
-              <li key={certificate.id}>
-                <div className="px-4 py-4 sm:px-6 hover:bg-gray-50 cursor-pointer" onClick={() => navigate(`/certificates/${certificate.id}`)}>
+              <li key={certificate.id || certificate._id}>
+                <div className="px-4 py-4 sm:px-6 hover:bg-gray-50 cursor-pointer" onClick={() => navigate(`/certificates/${certificate.id || certificate._id}`)}>
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-medium text-blue-600 truncate">
                       {certificate.title}

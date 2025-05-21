@@ -1,10 +1,12 @@
 import React from 'react';
-import { format } from 'date-fns';
 import { Certificate } from '../../types';
 import Card, { CardHeader, CardTitle, CardContent, CardFooter } from '../common/Card';
 import Button from '../common/Button';
 import { QRCodeSVG } from 'qrcode.react';
 import { Download, Share2, ExternalLink, Award, AlertTriangle, CheckCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { format, isValid } from 'date-fns';
+
 
 interface CertificateCardProps {
   certificate: Certificate;
@@ -43,6 +45,8 @@ const CertificateCard: React.FC<CertificateCardProps> = ({
 
   const verificationUrl = `https://xdc-certificate-verifier.example/verify/${certificate.verificationCode}`;
 
+  const navigate = useNavigate();
+
   return (
     <Card hover className="h-full flex flex-col">
       <CardHeader>
@@ -76,7 +80,7 @@ const CertificateCard: React.FC<CertificateCardProps> = ({
               </div>
               <div>
                 <p className="text-xs text-gray-500">Issued On</p>
-                <p>{format(new Date(issuedOn), 'MMM d, yyyy')}</p>
+                <p> {isValid(new Date(issuedOn)) ? format(new Date(issuedOn), 'MMM d, yyyy') : 'Unknown Date'}</p>
               </div>
               {transactionHash && (
                 <div>

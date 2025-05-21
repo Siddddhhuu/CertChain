@@ -11,11 +11,11 @@ interface Web3ContextProps {
 }
 
 const XDC_TESTNET_PARAMS = {
-  chainId: "0x4a",
+  chainId: "0x33",
   chainName: "XDC Apothem Network",
   nativeCurrency: {
-    name: "XDC",
-    symbol: "XDC",
+    name: "TXDC",
+    symbol: "TXDC",
     decimals: 18,
   },
   rpcUrls: ["https://rpc.apothem.network"],

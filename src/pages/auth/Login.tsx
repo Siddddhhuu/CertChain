@@ -116,17 +116,6 @@ const Login: React.FC = () => {
           </CardContent>
         </Card>
         
-        <div className="mt-8 text-center text-xs text-gray-500">
-          <p>
-            For demo purposes, use:
-          </p>
-          <p className="mt-1">
-            - Admin: <span className="font-medium">admin@example.com</span> / password
-          </p>
-          <p>
-            - User: <span className="font-medium">user@example.com</span> / password
-          </p>
-        </div>
       </div>
     </div>
   );

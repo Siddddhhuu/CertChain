@@ -43,13 +43,24 @@ const IssueCertificate: React.FC = () => {
         }
       }
       
-      // Prepare certificate data
+      // Generate a unique code for the certificate
+      const code = `CERT-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+      
+      // Prepare certificate data in the structure expected by the backend
       const certificateData = {
-        ...data,
-        institutionName: 'XDC Certificate Academy', // Hardcoded for demo
-        institutionId: authState.user?.id || '1',
-        issuedOn: new Date(),
-        expiresOn: data.expiryDate ? new Date(data.expiryDate) : undefined
+        code,
+        recipient: {
+          name: data.recipientName,
+          email: data.recipientEmail,
+          walletAddress: data.recipientWalletAddress,
+        },
+        issuer: authState.user?.id, // or whatever field is the user id
+        // template: selectedTemplateId, // If you have templates, add this
+        issuedAt: data.issueDate ? new Date(data.issueDate) : new Date(),
+        expiresAt: data.expiryDate ? new Date(data.expiryDate) : undefined,
+        title: data.title,
+        description: data.description,
+        // Add any other fields your backend expects
       };
       
       // Issue the certificate
@@ -59,7 +70,7 @@ const IssueCertificate: React.FC = () => {
       
       // Navigate to the certificate detail after a short delay
       setTimeout(() => {
-        navigate(`/certificates/${certificate.id}`);
+        navigate(`/certificates/${certificate.id || certificate._id}`);
       }, 2000);
     } catch (err) {
       console.error('Error issuing certificate:', err);

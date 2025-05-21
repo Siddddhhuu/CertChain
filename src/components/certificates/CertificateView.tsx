@@ -1,5 +1,5 @@
 import React from 'react';
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import { Certificate } from '../../types';
 import { QRCodeSVG } from 'qrcode.react';
 import { CheckCircle, Calendar, Award, School, User, Key } from 'lucide-react';
@@ -64,7 +64,7 @@ const CertificateView: React.FC<CertificateViewProps> = ({ certificate }) => {
           <Calendar className="h-5 w-5 text-blue-600 mr-3 mt-0.5" />
           <div>
             <h3 className="text-sm font-medium text-gray-500">Issue Date</h3>
-            <p className="text-base font-medium">{format(new Date(issuedOn), 'MMMM d, yyyy')}</p>
+            <p className="text-base font-medium">{isValid(new Date(certificate.issuedOn)) ? format(new Date(certificate.issuedOn), 'MMM d, yyyy') : 'Invalid Date'}</p>
           </div>
         </div>
         
