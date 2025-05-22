@@ -16,6 +16,9 @@ import Recipients from './pages/admin/Recipients';
 import WalletPage from './pages/admin/Wallet';
 import AdminCertificateList from './pages/admin/AdminCertificateList';
 import AddRecipient from './pages/admin/AddRecipient';
+import AdminRecipientDetail from './pages/admin/AdminRecipientDetail';
+import AdminRecipientCertificates from './pages/admin/AdminRecipientCertificates';
+import UserProfile from './pages/user/UserProfile';
 
 // Auth Guard component to protect routes
 const PrivateRoute = ({ children, requiredRole }: { children: JSX.Element, requiredRole?: string }) => {
@@ -70,6 +73,14 @@ function App() {
 
                 {/* Protected routes */}
                 <Route 
+                  path="/profile"
+                  element={
+                    <PrivateRoute>
+                      <UserProfile />
+                    </PrivateRoute>
+                  }
+                />
+                <Route 
                   path="/certificates" 
                   element={
                     <PrivateRoute>
@@ -120,18 +131,34 @@ function App() {
                   } 
                 />
                 <Route 
-                  path="/admin/recipients" 
-                  element={
-                    <PrivateRoute requiredRole="admin">
-                      <Recipients />
-                    </PrivateRoute>
-                  } 
-                />
-                <Route 
                   path="/admin/recipients/new"
                   element={
                     <PrivateRoute requiredRole="admin">
                       <AddRecipient />
+                    </PrivateRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin/recipients/:id"
+                  element={
+                    <PrivateRoute requiredRole="admin">
+                      <AdminRecipientDetail />
+                    </PrivateRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin/recipients/:id/certificates"
+                  element={
+                    <PrivateRoute requiredRole="admin">
+                      <AdminRecipientCertificates />
+                    </PrivateRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin/recipients" 
+                  element={
+                    <PrivateRoute requiredRole="admin">
+                      <Recipients />
                     </PrivateRoute>
                   } 
                 />

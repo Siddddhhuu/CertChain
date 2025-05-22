@@ -61,7 +61,7 @@ const IssueCertificate: React.FC = () => {
         metadata: {
           title: data.title,
           description: data.description,
-          institutionName: data.institutionName || 'Default Institution',
+          institutionName: data.institutionName || 'XDC Institution',
           institutionId: data.institutionId || 'INST-001',
         }
       };
