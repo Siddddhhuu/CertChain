@@ -70,7 +70,7 @@ const Home: React.FC = () => {
                     <User className="h-5 w-5 text-gray-500 mr-2" />
                     <div>
                       <p className="text-sm text-gray-500">Recipient</p>
-                      <p className="font-medium">Jane Smith</p>
+                      <p className="font-medium">Siddhesh Jadhav</p>
                     </div>
                   </div>
                   <div className="border-t border-gray-100 pt-4">

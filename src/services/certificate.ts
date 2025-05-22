@@ -40,6 +40,17 @@ export const certificateService = {
     }
   },
 
+  // Get all certificates for admin
+  async getAllCertificatesForAdmin(): Promise<Certificate[]> {
+    try {
+      const res = await axios.get(API_URL, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+      return res.data;
+    } catch (error) {
+      console.error('Error fetching all certificates for admin:', error);
+      throw new Error(axios.isAxiosError(error) ? error.response?.data?.message || 'Failed to fetch all certificates' : 'Failed to fetch all certificates');
+    }
+  },
+
   // Issue a new certificate
   async issueCertificate(certificateData: Partial<Certificate>): Promise<Certificate> {
     const res = await axios.post(API_URL, certificateData, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
@@ -69,21 +80,18 @@ export const certificateService = {
 
   // Verify a certificate
   async verifyCertificate(verificationCode: string): Promise<Certificate | null> {
-    // Find the certificate by verification code
-    const certificate = mockCertificates.find(cert => cert.verificationCode === verificationCode);
-    
-    if (!certificate) {
-      return null;
+    try {
+      const response = await axios.get(`${API_URL}/verify/${verificationCode}`);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 404) {
+          return null;
+        }
+        throw new Error(error.response?.data?.message || 'Failed to verify certificate');
+      }
+      throw error;
     }
-    
-    // In a real app, this would verify the certificate on the blockchain
-    const isValid = certificateContract.mockVerifyCertificate();
-    
-    if (!isValid) {
-      return null;
-    }
-    
-    return certificate;
   },
 
   // Generate a PDF of a certificate
@@ -108,32 +116,59 @@ export const certificateService = {
   // Download a certificate as a PDF
   async downloadCertificate(id: string): Promise<void> {
     try {
-      // For real implementation, we would:
+      console.log('Attempting to download certificate with ID:', id); // Log start
       // 1. Get certificate element
-      // 2. Convert to canvas
-      // 3. Create PDF
-      // 4. Trigger download
-      
-      // Demo code (commented out as it's not functional without actual DOM elements)
-      /*
       const certificateElement = document.getElementById('certificate-view');
-      if (!certificateElement) throw new Error('Certificate element not found');
-      
-      const canvas = await html2canvas(certificateElement);
+      if (!certificateElement) {
+        console.error('Error: Certificate element not found for PDF generation.'); // Log element not found
+        throw new Error('Certificate element not found for PDF generation.');
+      }
+
+      console.log('Certificate element found.', certificateElement); // Log element found
+
+      // 2. Convert to canvas
+      console.log('Converting element to canvas...'); // Log canvas conversion start
+      const canvas = await html2canvas(certificateElement, { scale: 2 }); // Increase scale for better resolution
+      console.log('Element converted to canvas.', canvas); // Log canvas conversion end
       const imgData = canvas.toDataURL('image/png');
-      
-      const pdf = new jsPDF('l', 'mm', 'a4');
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+      // 3. Create PDF
+      console.log('Creating PDF from canvas...'); // Log PDF creation start
+      const pdf = new jsPDF('l', 'mm', 'a4'); // 'l' for landscape, 'mm' for millimeters, 'a4' for A4 size
+      const imgWidth = 297; // A4 landscape width in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      console.log('PDF created.'); // Log PDF creation end
+
+      // 4. Trigger download
+      console.log('Triggering PDF download.'); // Log download trigger
       pdf.save(`certificate-${id}.pdf`);
-      */
-      
-      console.log('Certificate download simulated for ID:', id);
+
+      console.log('Certificate download process finished for ID:', id); // Log end
     } catch (error) {
-      console.error('Error downloading certificate:', error);
-      throw new Error('Failed to download certificate');
+      console.error('Error generating or downloading certificate PDF:', error); // Log error with details
+      throw new Error('Failed to download certificate PDF.');
+    }
+  },
+
+  // Permanently delete a certificate (admin only)
+  async deleteCertificate(id: string): Promise<void> {
+    try {
+      await axios.delete(`${API_URL}/${id}`, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+    } catch (error) {
+      console.error('Error deleting certificate:', error);
+      throw new Error(axios.isAxiosError(error) ? error.response?.data?.message || 'Failed to delete certificate' : 'Failed to delete certificate');
+    }
+  },
+
+  // Soft delete a certificate for the current user
+  async softDeleteCertificate(id: string): Promise<void> {
+    try {
+      await axios.put(`${API_URL}/soft-delete/${id}`, {}, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+    } catch (error) {
+      console.error('Error soft-deleting certificate:', error);
+      throw new Error(axios.isAxiosError(error) ? error.response?.data?.message || 'Failed to soft-delete certificate' : 'Failed to soft-delete certificate');
     }
   }
 };

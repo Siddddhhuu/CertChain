@@ -6,7 +6,9 @@ import {
   getCertificates,
   getCertificate,
   updateCertificate,
-  deleteCertificate
+  deleteCertificate,
+  verifyCertificate,
+  softDeleteCertificate
 } from '../controllers/certificateController.js';
 
 const router = express.Router();
@@ -16,5 +18,7 @@ router.post('/', adminAuth, createCertificate);
 router.get('/:id', auth, getCertificate);
 router.put('/:id', adminAuth, updateCertificate);
 router.delete('/:id', adminAuth, deleteCertificate);
+router.put('/soft-delete/:id', auth, softDeleteCertificate);
+router.get('/verify/:code', verifyCertificate);
 
 export default router;

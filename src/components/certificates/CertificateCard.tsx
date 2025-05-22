@@ -11,15 +11,15 @@ import { format, isValid } from 'date-fns';
 interface CertificateCardProps {
   certificate: Certificate;
   onView: (id: string) => void;
-  onDownload: (id: string) => void;
   onShare: (id: string) => void;
+  onDelete?: (id: string) => Promise<void>;
 }
 
 const CertificateCard: React.FC<CertificateCardProps> = ({
   certificate,
   onView,
-  onDownload,
   onShare,
+  onDelete
 }) => {
   const { 
     id, 
@@ -101,33 +101,32 @@ const CertificateCard: React.FC<CertificateCardProps> = ({
         </div>
       </CardContent>
       
-      <CardFooter className="flex justify-between">
-        <Button 
-          variant="outline" 
-          size="sm" 
+      <CardFooter className="flex flex-col space-y-2 md:flex-row md:justify-end md:space-x-1 md:space-y-0">
+        <Button
+          variant="outline"
+          size="sm"
           leftIcon={<Award className="h-4 w-4" />}
           onClick={() => onView(id)}
         >
           View
         </Button>
-        <div className="space-x-2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            leftIcon={<Share2 className="h-4 w-4" />}
-            onClick={() => onShare(id)}
+        <Button
+          variant="outline"
+          size="sm"
+          leftIcon={<Share2 className="h-4 w-4" />}
+          onClick={() => onShare(id)}
+        > 
+          Share
+        </Button>
+        {onDelete && (
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={() => onDelete(id)}
           >
-            Share
+            Delete
           </Button>
-          <Button 
-            variant="primary" 
-            size="sm" 
-            leftIcon={<Download className="h-4 w-4" />}
-            onClick={() => onDownload(id)}
-          >
-            Download
-          </Button>
-        </div>
+        )}
       </CardFooter>
     </Card>
   );

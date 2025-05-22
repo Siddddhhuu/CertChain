@@ -12,7 +12,8 @@ const certificateSchema = new mongoose.Schema({
   issuedAt: Date,
   blockchainTx: String,
   status: { type: String, default: 'issued' },
-  metadata: Object
+  metadata: Object,
+  deletedByUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }]
 }, { timestamps: true });
 
 export default mongoose.model('Certificate', certificateSchema);

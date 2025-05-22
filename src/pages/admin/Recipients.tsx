@@ -5,6 +5,7 @@ import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
 import Card, { CardHeader, CardTitle, CardContent, CardFooter } from '../../components/common/Card';
 import { Search, Plus, User, Mail, Wallet, Award, ExternalLink, Filter } from 'lucide-react';
+import { userService } from '../../services/user';
 
 interface Recipient {
   id: string;
@@ -24,53 +25,37 @@ const Recipients: React.FC = () => {
   const { authState } = useAuth();
   const navigate = useNavigate();
 
-  // Mock data loading
+  // Fetch real user data
   useEffect(() => {
-    const loadRecipients = async () => {
+    if (!authState.isAuthenticated || authState.user?.role !== 'admin') {
+      navigate('/login');
+      return;
+    }
+
+    const loadUsers = async () => {
       try {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Mock recipients data
-        const mockRecipients: Recipient[] = [
-          {
-            id: '1',
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            walletAddress: 'xdc1234567890abcdef1234567890abcdef12345678',
-            certificatesCount: 3,
-            lastCertificateDate: new Date('2024-02-15'),
-            status: 'active'
-          },
-          {
-            id: '2',
-            name: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            walletAddress: 'xdcabcdef1234567890abcdef1234567890abcdef12',
-            certificatesCount: 1,
-            lastCertificateDate: new Date('2024-01-20'),
-            status: 'active'
-          },
-          {
-            id: '3',
-            name: 'Bob Johnson',
-            email: 'bob.johnson@example.com',
-            walletAddress: 'xdc7890abcdef1234567890abcdef1234567890abcd',
-            certificatesCount: 0,
-            status: 'inactive'
-          }
-        ];
-        
-        setRecipients(mockRecipients);
+        setIsLoading(true);
+        const users = await userService.getAllUsers(); // Fetch real users
+        // Map user data to Recipient interface (adjust as needed based on your User model)
+        const recipientsData: Recipient[] = users.map(user => ({
+          id: user.id,
+          name: user.email, // Assuming user object has a name or use email
+          email: user.email,
+          walletAddress: user.walletAddress || '', // Assuming user object has walletAddress
+          certificatesCount: 0, // We don't have this data from the user endpoint
+          status: 'active', // Assuming all fetched users are active
+          // lastCertificateDate: undefined // We don't have this data
+        }));
+        setRecipients(recipientsData);
       } catch (error) {
         console.error('Error loading recipients:', error);
       } finally {
         setIsLoading(false);
       }
     };
-    
-    loadRecipients();
-  }, []);
+
+    loadUsers();
+  }, [authState, navigate]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);

@@ -24,7 +24,7 @@ const CertificateView: React.FC<CertificateViewProps> = ({ certificate }) => {
   const verificationUrl = `https://xdc-certificate-verifier.example/verify/${verificationCode}`;
 
   return (
-    <div className="flex flex-col items-center p-8 bg-white rounded-lg shadow-lg border border-gray-200 max-w-4xl mx-auto">
+    <div id="certificate-view" className="flex flex-col items-center p-8 bg-white rounded-lg shadow-lg border border-gray-200 max-w-4xl mx-auto">
       {/* Certificate Header */}
       <div className="flex justify-between items-center w-full mb-8">
         <div className="flex items-center">

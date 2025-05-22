@@ -146,7 +146,9 @@ const AdminDashboard: React.FC = () => {
           </Card>
         ))}
       </div>
-      <RecentCertificates />
+
+      <RecentCertificates /> <br/>
+
       {/* Recent Activity */}
       <div className="bg-white rounded-lg shadow overflow-hidden mb-8">
         <div className="px-6 py-5 border-b border-gray-200">

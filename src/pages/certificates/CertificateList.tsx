@@ -10,6 +10,7 @@ import { generateMockCertificates } from '../../utils/mockData';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { certificateService } from '../../services/certificate';
+import ConfirmationDialog from '../../components/common/ConfirmationDialog';
 
 const CertificateList: React.FC = () => {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
@@ -18,6 +19,9 @@ const CertificateList: React.FC = () => {
   const { authState } = useAuth();
   const navigate = useNavigate();
   
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [certificateToDeleteId, setCertificateToDeleteId] = useState<string | null>(null);
+
   useEffect(() => {
     const fetchCertificates = async () => {
       try {
@@ -25,20 +29,29 @@ const CertificateList: React.FC = () => {
         const data = await certificateService.getCertificates();
         // Filter certificates by recipient email
         const userEmail = authState.user?.email;
+        console.log('User email:', userEmail); 
+        console.log('All certificates:', data); 
+        
         const filteredData = userEmail 
-          ? data.filter(cert => cert.recipientEmail === userEmail)
+          ? data.filter(cert => {
+              const certEmail = cert.recipientEmail?.toLowerCase();
+              const userEmailLower = userEmail.toLowerCase();
+              console.log('Comparing:', { certEmail, userEmailLower }); 
+              return certEmail === userEmailLower;
+            })
           : data;
+        
+        console.log('Filtered certificates:', filteredData); 
         setCertificates(filteredData);
       } catch (error) {
         console.error('Error fetching certificates:', error);
-        // You might want to show an error message to the user here
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchCertificates();
-  }, [authState.user?.email]); // Add dependency on user email
+  }, [authState.user?.email]);
   
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -55,29 +68,10 @@ const CertificateList: React.FC = () => {
   };
   
   const handleDownloadCertificate = async (id: string) => {
-    try {
-      // In a real app, you'd generate a PDF from the server or use a library
-      // For demo purposes, we'll just simulate the download
-      
-      alert(`Certificate ${id} download started`);
-      
-      // In a real implementation:
-      // 1. Fetch the certificate data
-      // 2. Use html2canvas to capture the certificate view
-      // 3. Convert to PDF with jsPDF
-      // 4. Trigger download
-      
-      // Example code (not executed here):
-      // const certificateElement = document.getElementById('certificate-view');
-      // const canvas = await html2canvas(certificateElement);
-      // const imgData = canvas.toDataURL('image/png');
-      // const pdf = new jsPDF('l', 'mm', 'a4');
-      // pdf.addImage(imgData, 'PNG', 0, 0, 297, 210);
-      // pdf.save(`certificate-${id}.pdf`);
-    } catch (error) {
-      console.error('Error downloading certificate:', error);
-      alert('Failed to download certificate');
-    }
+    // This function is no longer used for the actual download.
+    // The download functionality is available on the Certificate Detail page.
+    console.log('Download button clicked on list for ID:', id); // Keep log for tracking
+    alert('Please view the certificate details to download the PDF.'); // Inform user where to download
   };
   
   const handleShareCertificate = (id: string) => {
@@ -97,6 +91,32 @@ const CertificateList: React.FC = () => {
       });
   };
   
+  const handleSoftDeleteCertificate = async (id: string) => {
+    setCertificateToDeleteId(id);
+    setIsDeleteDialogOpen(true);
+  };
+  
+  const handleConfirmDelete = async () => {
+    if (!certificateToDeleteId) return;
+
+    try {
+      await certificateService.softDeleteCertificate(certificateToDeleteId);
+      setCertificates(certificates.filter(cert => cert.id !== certificateToDeleteId));
+      setIsDeleteDialogOpen(false);
+      setCertificateToDeleteId(null);
+    } catch (error) {
+      console.error('Error soft-deleting certificate:', error);
+      alert('Failed to remove certificate from your list.');
+      setIsDeleteDialogOpen(false);
+      setCertificateToDeleteId(null);
+    }
+  };
+  
+  const handleCancelDelete = () => {
+    setIsDeleteDialogOpen(false);
+    setCertificateToDeleteId(null);
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="md:flex md:items-center md:justify-between mb-6">
@@ -160,8 +180,8 @@ const CertificateList: React.FC = () => {
               key={certificate.id}
               certificate={certificate}
               onView={handleViewCertificate}
-              onDownload={handleDownloadCertificate}
               onShare={handleShareCertificate}
+              onDelete={handleSoftDeleteCertificate}
             />
           ))}
         </div>
@@ -175,6 +195,14 @@ const CertificateList: React.FC = () => {
           )}
         </div>
       )}
+
+      <ConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        title="Remove Certificate"
+        message="Are you sure you want to remove this certificate from your list? You can always view it again from the shared link if needed."
+      />
     </div>
   );
 };
