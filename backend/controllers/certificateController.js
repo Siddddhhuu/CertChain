@@ -4,7 +4,7 @@ export const createCertificate = async (req, res) => {
   try {
     const cert = new Certificate(req.body);
     await cert.save();
-    res.status(201).json(cert);
+    res.status(201).json({ ...cert.toObject(), id: cert._id });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

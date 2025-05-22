@@ -46,6 +46,7 @@ export const generateMockCertificate = (userId: string): Certificate => {
   const randomStatus = Math.random() < 0.8 ? 'issued' : statuses[Math.floor(Math.random() * statuses.length)];
   
   return {
+    _id: '60c72b2f9b1e8e6d88f0c9b1', // Example valid ObjectId
     id: certId,
     recipientName: 'John Doe',
     recipientEmail: 'john.doe@example.com',

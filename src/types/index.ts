@@ -8,6 +8,7 @@ export interface User {
 
 export interface Certificate {
   id: string;
+  _id?: string;  // MongoDB document ID
   recipientName: string;
   recipientEmail: string;
   recipientWalletAddress: string;

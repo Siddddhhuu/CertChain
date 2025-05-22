@@ -24,6 +24,13 @@ const CertificateDetail: React.FC = () => {
         setIsLoading(false);
         return;
       }
+
+      // Validate ID format
+      if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+        setError('Invalid certificate ID format');
+        setIsLoading(false);
+        return;
+      }
       
       try {
         setIsLoading(true);
