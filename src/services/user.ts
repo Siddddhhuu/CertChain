@@ -82,6 +82,7 @@ export const userService = {
   // Upload profile picture
   async uploadProfilePicture(userId: string, file: File): Promise<UserProfileData> {
     try {
+      console.log('Starting profile picture upload for user ID:', userId); // Debug log
       const formData = new FormData();
       formData.append('profilePicture', file);
 
@@ -95,6 +96,7 @@ export const userService = {
           }
         }
       );
+      console.log('Profile picture uploaded successfully:', res.data); // Debug log
       return res.data;
     } catch (error) {
       console.error('Error uploading profile picture:', error);

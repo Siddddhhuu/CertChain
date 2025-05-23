@@ -43,7 +43,11 @@ export const getUsers = async (req, res) => {
     const usersWithCertCount = await Promise.all(users.map(async (user) => {
       const certificatesCount = await Certificate.countDocuments({ 'recipient.email': user.email });
       console.log(`User: ${user.email}, Certificates Count: ${certificatesCount}`); // Added log for count
-      return { ...user, certificatesCount };
+      // Explicitly add the id field
+      const userData = { ...user, certificatesCount };
+      userData.id = user._id.toString();
+      delete userData._id; // Optional: remove _id if only 'id' is needed
+      return userData;
     }));
 
     console.log('Sending users with certificate count:', usersWithCertCount); // Added log for final data
@@ -127,16 +131,20 @@ export const deleteUser = async (req, res) => {
 // Create a new user
 export const createUser = async (req, res) => {
   try {
+    console.log('Received data for creating user:', req.body); // Log incoming data
     const { name, email, walletAddress, password, role } = req.body; // Assuming these fields are sent
     
     // Basic validation (add more as needed)
     if (!email || !password) {
+      console.log('Validation failed: Email or password missing'); // Log validation fail
       return res.status(400).json({ message: 'Email and password are required' });
     }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
+    console.log('Existing user check result:', existingUser); // Log existing user check
     if (existingUser) {
+      console.log('User with email already exists:', email); // Log existing user found
       return res.status(400).json({ message: 'User with that email already exists' });
     }
 
@@ -148,13 +156,16 @@ export const createUser = async (req, res) => {
       role: role || 'user', // Default role to user if not provided
     });
 
+    console.log('New User object before saving:', user); // Log user object before save
     await user.save();
+    console.log('User saved successfully:', user); // Log successful save
+
     // Return user data without the password
     const userResponse = user.toObject();
     delete userResponse.password;
     res.status(201).json(userResponse);
   } catch (err) {
-    console.error('Error creating user:', err);
+    console.error('Error creating user:', err); // Log specific error
     res.status(400).json({ message: err.message });
   }
 };

@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useWeb3 } from '../../contexts/Web3Context';
 import Button from '../common/Button';
-import { FileText, UserCircle, LogOut, Menu, X, Wallet, Home, Shield } from 'lucide-react';
+import { FileText, UserCircle, LogOut, Menu, X, Wallet, Home, Shield, Info, Mail } from 'lucide-react';
 import Avatar from '../common/Avatar';
 
 const Navbar: React.FC = () => {
@@ -20,6 +20,8 @@ const Navbar: React.FC = () => {
   const navLinks = [
     { name: 'Home', href: '/', icon: <Home className="h-5 w-5" /> },
     { name: 'Certificates', href: '/certificates', icon: <FileText className="h-5 w-5" /> },
+    { name: 'About', href: '/about', icon: <Info className="h-5 w-5" /> },
+    { name: 'Contact', href: '/contact', icon: <Mail className="h-5 w-5" /> },
     ...(isAdmin ? [{ name: 'Admin Dashboard', href: '/admin', icon: <Shield className="h-5 w-5" /> }] : []),
   ];
   

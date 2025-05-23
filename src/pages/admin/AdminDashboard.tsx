@@ -6,7 +6,7 @@ import { certificateService } from '../../services/certificate';
 import Button from '../../components/common/Button';
 import RecentCertificates from './RecentCertificates';
 import Card, { CardHeader, CardTitle, CardContent } from '../../components/common/Card';
-import { Plus, Users, FileText as CertIcon, Shield, Wallet, User, BarChart } from 'lucide-react';
+import { Plus, Users, FileText as CertIcon, Shield, Wallet, User, BarChart, Info, Mail } from 'lucide-react';
 
 const AdminDashboard: React.FC = () => {
   const { authState } = useAuth();
@@ -73,6 +73,12 @@ const AdminDashboard: React.FC = () => {
       description: 'Manage your blockchain wallet and gas funds',
       icon: <Wallet className="h-8 w-8 text-blue-600" />,
       action: () => navigate('/admin/wallet'),
+    },
+    { 
+      name: 'Contact Messages', 
+      description: 'Manage your user messages and inquiries',
+      icon: <Mail className="h-8 w-8 text-blue-600" />,
+      action: () => navigate('/admin/contact-messages'),
     },
   ];
   

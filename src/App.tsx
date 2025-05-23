@@ -19,6 +19,10 @@ import AddRecipient from './pages/admin/AddRecipient';
 import AdminRecipientDetail from './pages/admin/AdminRecipientDetail';
 import AdminRecipientCertificates from './pages/admin/AdminRecipientCertificates';
 import UserProfile from './pages/user/UserProfile';
+import About from './pages/About';
+import Contact from './pages/Contact';
+import ContactMessages from './pages/admin/ContactMessages';
+
 
 // Auth Guard component to protect routes
 const PrivateRoute = ({ children, requiredRole }: { children: JSX.Element, requiredRole?: string }) => {
@@ -70,6 +74,8 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/verify/:code?" element={<VerifyCertificate />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
 
                 {/* Protected routes */}
                 <Route 
@@ -169,6 +175,14 @@ function App() {
                       <WalletPage />
                     </PrivateRoute>
                   } 
+                />
+                <Route
+                  path="/admin/contact-messages"
+                  element={
+                    <PrivateRoute requiredRole="admin">
+                      <ContactMessages />
+                    </PrivateRoute>
+                  }
                 />
 
                 {/* Fallback route */}

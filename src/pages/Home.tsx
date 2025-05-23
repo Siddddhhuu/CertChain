@@ -1,12 +1,12 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import Button from '../components/common/Button';
-import { FileText, Shield, User, Check, Award, FileCheck } from 'lucide-react';
+import React from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import Button from "../components/common/Button";
+import { FileText, Shield, User, Check, Award, FileCheck } from "lucide-react";
 
 const Home: React.FC = () => {
   const { authState } = useAuth();
-  
+
   return (
     <div className="bg-white">
       {/* Hero Section */}
@@ -17,25 +17,34 @@ const Home: React.FC = () => {
             <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left">
               <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
                 <span className="block">Secure Blockchain</span>
-                <span className="block text-blue-600">Certificate Platform</span>
+                <span className="block text-blue-600">
+                  Certificate Platform
+                </span>
               </h1>
               <p className="mt-6 text-base text-gray-600 sm:text-lg md:text-xl">
                 Issue, verify, and manage tamper-proof digital certificates
                 using XDC blockchain technology for ultimate security and
                 authenticity.
               </p>
-              
+
               <div className="mt-8 sm:max-w-lg sm:mx-auto sm:text-center lg:text-left">
                 {authState.isAuthenticated ? (
                   <div className="flex flex-col sm:flex-row gap-4">
                     <Link to="/certificates">
-                      <Button size="lg" leftIcon={<FileText className="h-5 w-5" />}>
+                      <Button
+                        size="lg"
+                        leftIcon={<FileText className="h-5 w-5" />}
+                      >
                         View My Certificates
                       </Button>
                     </Link>
-                    {authState.user?.role === 'admin' && (
+                    {authState.user?.role === "admin" && (
                       <Link to="/admin">
-                        <Button variant="outline" size="lg" leftIcon={<Shield className="h-5 w-5" />}>
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          leftIcon={<Shield className="h-5 w-5" />}
+                        >
                           Admin Dashboard
                         </Button>
                       </Link>
@@ -47,20 +56,26 @@ const Home: React.FC = () => {
                       <Button size="lg">Get Started</Button>
                     </Link>
                     <Link to="/signup">
-                      <Button variant="outline" size="lg">Create Account</Button>
+                      <Button variant="outline" size="lg">
+                        Create Account
+                      </Button>
                     </Link>
                   </div>
                 )}
               </div>
             </div>
-            
+
             <div className="mt-12 lg:mt-0 lg:col-span-6">
               <div className="bg-white shadow-xl rounded-lg overflow-hidden transform rotate-2 hover:rotate-0 transition-transform duration-300">
                 <div className="px-8 py-10 bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h2 className="text-2xl font-bold">Blockchain Certificate</h2>
-                      <p className="text-blue-100 mt-1">Verified on XDC Network</p>
+                      <h2 className="text-2xl font-bold">
+                        Blockchain Certificate
+                      </h2>
+                      <p className="text-blue-100 mt-1">
+                        Verified on XDC Network
+                      </p>
                     </div>
                     <Award className="h-12 w-12" />
                   </div>
@@ -74,9 +89,12 @@ const Home: React.FC = () => {
                     </div>
                   </div>
                   <div className="border-t border-gray-100 pt-4">
-                    <h3 className="text-lg font-semibold">Blockchain Developer Certification</h3>
+                    <h3 className="text-lg font-semibold">
+                      Blockchain Developer Certification
+                    </h3>
                     <p className="text-gray-600 text-sm mt-1">
-                      Successfully completed the advanced blockchain developer program with excellence
+                      Successfully completed the advanced blockchain developer
+                      program with excellence
                     </p>
                   </div>
                   <div className="mt-6 flex justify-between items-center">
@@ -95,51 +113,60 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Features Section */}
       <div className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-base font-semibold text-blue-600 tracking-wide uppercase">Features</h2>
+            <h2 className="text-base font-semibold text-blue-600 tracking-wide uppercase">
+              Features
+            </h2>
             <p className="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">
               Why Choose CertChain?
             </p>
             <p className="mt-5 max-w-2xl mx-auto text-xl text-gray-500">
-              Our platform offers a secure, transparent, and efficient way to manage certificates
+              Our platform offers a secure, transparent, and efficient way to
+              manage certificates
             </p>
           </div>
-          
+
           <div className="mt-16">
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
               {[
                 {
-                  title: 'Blockchain Security',
-                  description: 'Certificates are stored on the XDC blockchain, making them immutable and tamper-proof.',
+                  title: "Blockchain Security",
+                  description:
+                    "Certificates are stored on the XDC blockchain, making them immutable and tamper-proof.",
                   icon: <Shield className="h-8 w-8 text-blue-600" />,
                 },
                 {
-                  title: 'Instant Verification',
-                  description: 'Verify the authenticity of certificates instantly using our QR code technology.',
+                  title: "Instant Verification",
+                  description:
+                    "Verify the authenticity of certificates instantly using our QR code technology.",
                   icon: <Check className="h-8 w-8 text-blue-600" />,
                 },
                 {
-                  title: 'Easy Management',
-                  description: 'Manage all your certificates in one place with our intuitive dashboard.',
+                  title: "Easy Management",
+                  description:
+                    "Manage all your certificates in one place with our intuitive dashboard.",
                   icon: <FileText className="h-8 w-8 text-blue-600" />,
                 },
                 {
-                  title: 'Institutional Control',
-                  description: 'Educational institutions maintain complete control over certificate issuance and revocation.',
+                  title: "Institutional Control",
+                  description:
+                    "Educational institutions maintain complete control over certificate issuance and revocation.",
                   icon: <Award className="h-8 w-8 text-blue-600" />,
                 },
                 {
-                  title: 'Recipient Ownership',
-                  description: 'Recipients own their credentials and can share them securely with third parties.',
+                  title: "Recipient Ownership",
+                  description:
+                    "Recipients own their credentials and can share them securely with third parties.",
                   icon: <User className="h-8 w-8 text-blue-600" />,
                 },
                 {
-                  title: 'Transparent History',
-                  description: 'View the complete history and audit trail of any certificate on the blockchain.',
+                  title: "Transparent History",
+                  description:
+                    "View the complete history and audit trail of any certificate on the blockchain.",
                   icon: <FileCheck className="h-8 w-8 text-blue-600" />,
                 },
               ].map((feature, index) => (
@@ -165,18 +192,20 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* CTA Section */}
       <div className="bg-blue-700">
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
           <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
             <span className="block">Ready to get started?</span>
-            <span className="block text-blue-200">Create your account today.</span>
+            <span className="block text-blue-200">
+              Create your account today.
+            </span>
           </h2>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 lg:mt-0 lg:flex-shrink-0">
             <Link to="/signup">
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="bg-white text-blue-600 hover:bg-blue-50 transition-all duration-200"
               >
                 Sign up for free
@@ -184,7 +213,7 @@ const Home: React.FC = () => {
             </Link>
             <Link to="/login">
               <Button
-                size="lg" 
+                size="lg"
                 className="bg-white border-white hover:bg-blue-600 hover:border-transparent transition-all duration-200"
               >
                 Sign in

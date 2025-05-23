@@ -11,6 +11,7 @@ import certificateRoutes from './routes/certificates.js';
 import templateRoutes from './routes/templates.js';
 import transactionRoutes from './routes/transactions.js';
 import recipientRoutes from './routes/recipients.js';
+import contactRoutes from './routes/contact.js';
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -28,6 +29,7 @@ app.use('/api/certificates', certificateRoutes);
 app.use('/api/templates', templateRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/recipients', recipientRoutes);
+app.use('/api/contact', contactRoutes);
 
 mongoose.connect(config.mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {

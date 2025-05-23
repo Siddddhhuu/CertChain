@@ -81,6 +81,7 @@ const Recipients: React.FC = () => {
   };
 
   const handleViewCertificates = (id: string) => {
+    console.log('Navigating to certificates for recipient ID:', id);
     navigate(`/admin/recipients/${id}/certificates`);
   };
 
