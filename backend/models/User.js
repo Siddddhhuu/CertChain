@@ -6,10 +6,12 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   role: { type: String, enum: ['admin', 'user'], default: 'user' },
-  walletAddress: { type: String },
+  walletAddress: { type: String, default: null },
   phoneNumber: { type: String },
   address: { type: String },
-  profilePictureUrl: { type: String }
+  profilePictureUrl: { type: String },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date
 }, { timestamps: true });
 
 userSchema.pre('save', async function(next) {

@@ -6,6 +6,8 @@ import Navbar from './components/layout/Navbar';
 import Home from './pages/Home';
 import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
+import ForgotPassword from './pages/auth/ForgotPassword';
+import ResetPassword from './pages/auth/ResetPassword';
 import CertificateList from './pages/certificates/CertificateList';
 import CertificateDetail from './pages/certificates/CertificateDetail';
 import VerifyCertificate from './pages/certificates/VerifyCertificate';
@@ -69,13 +71,15 @@ function App() {
         <Router>
           <div className="min-h-screen bg-gray-100">
             <Navbar />
-            <NetworkWarning /> {/* ✅ Insert the warning banner here */}
+            <NetworkWarning /> {/* ✅ Inserting the warning banner here */}
             <main>
               <Routes>
                 {/* Public routes */}
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password/:token" element={<ResetPassword />} />
                 <Route path="/verify/:code?" element={<VerifyCertificate />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />

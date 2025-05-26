@@ -79,6 +79,7 @@ const Login: React.FC = () => {
                 leftIcon={<Lock className="h-5 w-5 text-gray-400" />}
                 error={errors.password?.message}
                 placeholder="********"
+                togglePasswordVisibility={true}
                 {...register('password', {
                   required: 'Password is required',
                   minLength: {
@@ -87,6 +88,15 @@ const Login: React.FC = () => {
                   },
                 })}
               />
+              
+              <div className="flex justify-end">
+                <Link
+                  to="/forgot-password"
+                  className="text-sm font-medium text-blue-600 hover:text-blue-500"
+                >
+                  Forgot your password?
+                </Link>
+              </div>
               
               <div>
                 <Button

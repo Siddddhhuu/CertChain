@@ -1,9 +1,35 @@
+import { config as dotenvConfig } from 'dotenv';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+// Get the directory name
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load environment variables from the correct path
+const envPath = path.join(__dirname, '.env');
+console.log('Loading environment variables from:', envPath);
+dotenvConfig({ path: envPath });
+
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import config from './config.js';
-import path from 'path';
-import { fileURLToPath } from 'url';
+
+// Detailed environment variable logging
+console.log('=== Environment Variables Check ===');
+console.log('Current working directory:', process.cwd());
+console.log('Environment file path:', envPath);
+console.log('Environment variables loaded:', {
+  NODE_ENV: process.env.NODE_ENV,
+  PORT: process.env.PORT,
+  SMTP_USER: process.env.SMTP_USER,
+  SMTP_PASS: process.env.SMTP_PASS ? 'configured' : 'not configured',
+  SMTP_FROM: process.env.SMTP_FROM,
+  FRONTEND_URL: process.env.FRONTEND_URL,
+  MONGODB_URI: process.env.MONGODB_URI ? 'configured' : 'not configured',
+});
+console.log('================================');
 
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
@@ -14,8 +40,6 @@ import recipientRoutes from './routes/recipients.js';
 import contactRoutes from './routes/contact.js';
 
 const app = express();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 app.use(cors());
 app.use(express.json());

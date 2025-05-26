@@ -7,6 +7,7 @@ declare global {
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { User, AuthState } from "../types";
 import { authService } from '../services/auth';
+import { api } from '../services/api';
 
 interface AuthContextProps {
   authState: AuthState;
@@ -14,6 +15,8 @@ interface AuthContextProps {
   signup: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   connectWallet: () => Promise<void>;
+  forgotPassword: (email: string) => Promise<void>;
+  resetPassword: (token: string, password: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -119,6 +122,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const forgotPassword = async (email: string) => {
+    try {
+      setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
+      const response = await api.post('/auth/forgot-password', { email });
+      if (response.data.success) {
+        // Successfully sent reset email
+        return;
+      }
+      throw new Error('Failed to send reset email');
+    } catch (error) {
+      setAuthState(prev => ({ ...prev, isLoading: false, error: 'Failed to send reset email' }));
+      throw error;
+    } finally {
+      setAuthState(prev => ({ ...prev, isLoading: false }));
+    }
+  };
+
+  const resetPassword = async (token: string, password: string) => {
+    try {
+      setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
+      const response = await api.post('/auth/reset-password', { token, password });
+      if (response.data.success) {
+        return;
+      }
+      throw new Error('Failed to reset password');
+    } catch (error) {
+      setAuthState(prev => ({ ...prev, isLoading: false, error: 'Failed to reset password' }));
+      throw error;
+    } finally {
+      setAuthState(prev => ({ ...prev, isLoading: false }));
+    }
+  };
+
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     const token = localStorage.getItem("token");
@@ -148,8 +184,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
+  const value = {
+    authState,
+    login,
+    signup,
+    logout,
+    connectWallet,
+    forgotPassword,
+    resetPassword,
+  };
+
   return (
-    <AuthContext.Provider value={{ authState, login, signup, logout, connectWallet }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

@@ -93,6 +93,7 @@ const Signup: React.FC = () => {
                 leftIcon={<Lock className="h-5 w-5 text-gray-400" />}
                 error={errors.password?.message}
                 placeholder="********"
+                togglePasswordVisibility={true}
                 {...register('password', {
                   required: 'Password is required',
                   minLength: {
@@ -108,6 +109,7 @@ const Signup: React.FC = () => {
                 leftIcon={<Lock className="h-5 w-5 text-gray-400" />}
                 error={errors.confirmPassword?.message}
                 placeholder="********"
+                togglePasswordVisibility={true}
                 {...register('confirmPassword', {
                   required: 'Please confirm your password',
                   validate: (value) =>
