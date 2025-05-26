@@ -58,7 +58,6 @@ export const getCertificates = async (req, res) => {
       };
       return transformed;
     });
-
     console.log('Sending transformed certificates.', transformedCerts.length);
     res.json(transformedCerts);
   } catch (err) {

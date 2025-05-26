@@ -174,7 +174,7 @@ const Home: React.FC = () => {
                   <div className="flow-root bg-gray-50 rounded-lg px-6 pb-8 h-full">
                     <div className="-mt-6">
                       <div>
-                        <span className="inline-flex items-center justify-center p-3 bg-blue-500 rounded-md shadow-lg">
+                        <span className="inline-flex items-center justify-center p-3 bg-blue-500 rounded-md shadow-lg transform transition-transform duration-300 hover:scale-110">
                           {feature.icon}
                         </span>
                       </div>

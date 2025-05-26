@@ -18,9 +18,27 @@ const Footer: React.FC = () => {
 
         {/* Quick Links */}
         <div className="flex flex-wrap justify-center md:justify-start mb-6 md:mb-0">
-          <Link to="/" className="mx-3 hover:text-white transition-colors duration-300">Home</Link>
-          <Link to="/about" className="mx-3 hover:text-white transition-colors duration-300">About</Link>
-          <Link to="/contact" className="mx-3 hover:text-white transition-colors duration-300">Contact</Link>
+          {/* Link 1 */}
+          <Link to="/" className="mx-3 relative group">
+            <span className="relative">
+              Home
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-300 ease-in-out"></span>
+            </span>
+          </Link>
+          {/* Link 2 */}
+          <Link to="/about" className="mx-3 relative group">
+             <span className="relative">
+              About
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-300 ease-in-out"></span>
+            </span>
+          </Link>
+          {/* Link 3 */}
+          <Link to="/contact" className="mx-3 relative group">
+             <span className="relative">
+              Contact
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-300 ease-in-out"></span>
+            </span>
+          </Link>
         </div>
 
         {/* Copyright */}
