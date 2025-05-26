@@ -28,6 +28,7 @@ export interface Certificate {
 
 export interface CertificateTemplate {
   id: string;
+  _id?: string; // MongoDB document ID
   name: string;
   description: string;
   institutionId: string;

@@ -6,6 +6,7 @@ import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
 import Card, { CardHeader, CardTitle, CardContent, CardFooter } from '../../components/common/Card';
 import { Search, Plus, FileText, Edit2, Trash2, Copy, Eye } from 'lucide-react';
+import { templateService } from '../../services/template';
 
 const Template: React.FC = () => {
   const [templates, setTemplates] = useState<CertificateTemplate[]>([]);
@@ -14,58 +15,19 @@ const Template: React.FC = () => {
   const { authState } = useAuth();
   const navigate = useNavigate();
 
-  // Mock data loading
+  // Fetch data from backend
   useEffect(() => {
     const loadTemplates = async () => {
       try {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Mock templates data
-        const mockTemplates: CertificateTemplate[] = [
-          {
-            id: '1',
-            name: 'Academic Certificate',
-            description: 'Standard template for academic achievements',
-            institutionId: authState.user?.id || '1',
-            fields: [
-              { id: '1', name: 'studentName', label: 'Student Name', type: 'text', required: true },
-              { id: '2', name: 'degree', label: 'Degree', type: 'text', required: true },
-              { id: '3', name: 'graduationDate', label: 'Graduation Date', type: 'date', required: true },
-              { id: '4', name: 'gpa', label: 'GPA', type: 'text', required: false }
-            ],
-            design: {
-              backgroundColor: '#ffffff',
-              textColor: '#000000',
-              accentColor: '#2563eb',
-              logoUrl: '/logo.png'
-            }
-          },
-          {
-            id: '2',
-            name: 'Professional Certification',
-            description: 'Template for professional certifications and licenses',
-            institutionId: authState.user?.id || '1',
-            fields: [
-              { id: '1', name: 'recipientName', label: 'Recipient Name', type: 'text', required: true },
-              { id: '2', name: 'certificationName', label: 'Certification Name', type: 'text', required: true },
-              { id: '3', name: 'issueDate', label: 'Issue Date', type: 'date', required: true },
-              { id: '4', name: 'expiryDate', label: 'Expiry Date', type: 'date', required: false }
-            ],
-            design: {
-              backgroundColor: '#f8fafc',
-              textColor: '#1e293b',
-              accentColor: '#0f766e',
-              logoUrl: '/logo.png'
-            }
-          }
-        ];
-        
-        setTemplates(mockTemplates);
+        console.log('Fetching templates...');
+        const fetchedTemplates = await templateService.getAllTemplates();
+        console.log('Templates fetched successfully:', fetchedTemplates);
+        setTemplates(fetchedTemplates);
       } catch (error) {
         console.error('Error loading templates:', error);
       } finally {
         setIsLoading(false);
+        console.log('Template loading finished.');
       }
     };
     
@@ -90,7 +52,7 @@ const Template: React.FC = () => {
   };
 
   const handleDuplicateTemplate = (id: string) => {
-    // In a real app, this would create a copy of the template
+    console.log('Duplicate template:', id);
     const template = templates.find(t => t.id === id);
     if (template) {
       const newTemplate = {
@@ -102,12 +64,22 @@ const Template: React.FC = () => {
     }
   };
 
-  const handleDeleteTemplate = (id: string) => {
-    // In a real app, this would delete the template from the backend
-    setTemplates(templates.filter(t => t.id !== id));
+  const handleDeleteTemplate = async (id: string) => {
+    if (window.confirm('Are you sure you want to delete this template?')) {
+      try {
+        console.log('Attempting to delete template:', id);
+        await templateService.deleteTemplate(id);
+        setTemplates(templates.filter(t => t.id !== id));
+        console.log('Template deleted successfully', id);
+      } catch (error) {
+        console.error('Failed to delete template:', error);
+        alert('Failed to delete template.');
+      }
+    }
   };
 
   const handlePreviewTemplate = (id: string) => {
+    console.log('Preview template:', id);
     navigate(`/admin/templates/${id}/preview`);
   };
 

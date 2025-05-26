@@ -22,6 +22,9 @@ import UserProfile from './pages/user/UserProfile';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import ContactMessages from './pages/admin/ContactMessages';
+import CreateTemplate from './pages/admin/CreateTemplate';
+import EditTemplate from './pages/admin/EditTemplate';
+import PreviewTemplate from './pages/admin/PreviewTemplate';
 
 
 // Auth Guard component to protect routes
@@ -135,6 +138,30 @@ function App() {
                       <Template />
                     </PrivateRoute>
                   } 
+                />
+                <Route 
+                  path="/admin/templates/new"
+                  element={
+                    <PrivateRoute requiredRole="admin">
+                      <CreateTemplate />
+                    </PrivateRoute>
+                  }
+                />
+                <Route 
+                  path="/admin/templates/:id/edit"
+                  element={
+                    <PrivateRoute requiredRole="admin">
+                      <EditTemplate />
+                    </PrivateRoute>
+                  }
+                />
+                <Route 
+                  path="/admin/templates/:id/preview"
+                  element={
+                    <PrivateRoute requiredRole="admin">
+                      <PreviewTemplate />
+                    </PrivateRoute>
+                  }
                 />
                 <Route 
                   path="/admin/recipients/new"

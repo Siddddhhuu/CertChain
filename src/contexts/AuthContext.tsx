@@ -6,6 +6,7 @@ declare global {
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { User, AuthState } from "../types";
+import { authService } from '../services/auth';
 
 interface AuthContextProps {
   authState: AuthState;
@@ -29,20 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       setAuthState((prev) => ({ ...prev, isLoading: true, error: null }));
 
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Login failed");
-      }
-
-      const data = await response.json();
+      const data = await authService.login(email, password);
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
@@ -58,6 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isLoading: false,
         error: error.message || "Invalid credentials",
       }));
+      throw error;
     }
   };
 
@@ -65,20 +54,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       setAuthState((prev) => ({ ...prev, isLoading: true, error: null }));
 
-      const response = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Signup failed");
-      }
-
-      const data = await response.json();
+      const data = await authService.signup(name, email, password);
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));

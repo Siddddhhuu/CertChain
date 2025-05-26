@@ -8,7 +8,8 @@ import {
   updateCertificate,
   deleteCertificate,
   verifyCertificate,
-  softDeleteCertificate
+  softDeleteCertificate,
+  getCertificatesByRecipientId
 } from '../controllers/certificateController.js';
 
 const router = express.Router();
@@ -20,5 +21,6 @@ router.put('/:id', adminAuth, updateCertificate);
 router.delete('/:id', adminAuth, deleteCertificate);
 router.put('/soft-delete/:id', auth, softDeleteCertificate);
 router.get('/verify/:code', verifyCertificate);
+router.get('/recipient/:recipientId', adminAuth, getCertificatesByRecipientId);
 
 export default router;

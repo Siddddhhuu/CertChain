@@ -1,20 +1,45 @@
 import axios from 'axios';
 import { Certificate } from '../types';
+import { API_BASE_URL } from '../config';
 import { certificateContract } from './contract';
 import { generateMockCertificate } from '../utils/mockData';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
-const API_URL = '/api/certificates'; // Adjust if your backend route is different
+const API_URL = `${API_BASE_URL}/api/certificates`;
 
 // Mock database for local development
 let mockCertificates: Certificate[] = [];
 
 export const certificateService = {
-  // Get all certificates for a user
+  // Get all certificates for a user (backend handles admin vs. user)
   async getCertificates(): Promise<Certificate[]> {
-    const res = await axios.get(API_URL, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-    return res.data;
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      const res = await axios.get(API_URL, {
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      return res.data;
+    } catch (error) {
+      console.error('Error fetching certificates:', error);
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 401) {
+          // Clear invalid token
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          throw new Error('Session expired. Please login again.');
+        }
+        throw new Error(error.response?.data?.message || 'Failed to fetch certificates');
+      }
+      throw error;
+    }
   },
 
   // Get a single certificate by ID
@@ -40,14 +65,16 @@ export const certificateService = {
     }
   },
 
-  // Get all certificates for admin
-  async getAllCertificatesForAdmin(): Promise<Certificate[]> {
+  // Get certificates for a specific recipient (Admin only, backend enforces)
+  async getCertificatesByRecipientId(recipientId: string): Promise<Certificate[]> {
     try {
-      const res = await axios.get(API_URL, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+      const res = await axios.get(`${API_URL}/recipient/${recipientId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
       return res.data;
     } catch (error) {
-      console.error('Error fetching all certificates for admin:', error);
-      throw new Error(axios.isAxiosError(error) ? error.response?.data?.message || 'Failed to fetch all certificates' : 'Failed to fetch all certificates');
+      console.error('Error fetching recipient certificates:', error);
+      throw new Error(axios.isAxiosError(error) ? error.response?.data?.message || 'Failed to fetch recipient certificates' : 'Failed to fetch recipient certificates');
     }
   },
 

@@ -1,4 +1,5 @@
 import Certificate from '../models/Certificate.js';
+import User from '../models/User.js';
 
 export const createCertificate = async (req, res) => {
   try {
@@ -12,8 +13,30 @@ export const createCertificate = async (req, res) => {
 
 export const getCertificates = async (req, res) => {
   try {
-    const userId = req.user.id; // Assuming user ID is available in req.user
-    const certs = await Certificate.find({ deletedByUsers: { $ne: userId } }).populate('issuer template'); // Filter out soft-deleted certs
+    const userId = req.user.id;
+    const userRole = req.user.role;
+
+    console.log('getCertificates called.');
+    console.log('Authenticated user:', req.user);
+    console.log('User ID:', userId);
+    console.log('User Role:', userRole);
+
+    let certs;
+    if (userRole === 'admin') {
+      console.log('Fetching all certificates for admin...');
+      // Admin can see all certificates
+      certs = await Certificate.find().populate('issuer template');
+      console.log('Fetched certificates count (admin):', certs.length);
+    } else {
+      console.log('Fetching certificates for regular user...');
+      // Regular users can only see their own certificates
+      certs = await Certificate.find({
+        'recipient.email': req.user.email,
+        deletedByUsers: { $ne: userId }
+      }).populate('issuer template');
+       console.log('Fetched certificates count (user):', certs.length);
+    }
+
     // Transform the data structure to match frontend expectations
     const transformedCerts = certs.map(cert => {
       const transformed = {
@@ -33,12 +56,13 @@ export const getCertificates = async (req, res) => {
         metadata: cert.metadata,
         id: cert._id
       };
-      console.log('Transformed certificate:', transformed); // Debug log
       return transformed;
     });
+
+    console.log('Sending transformed certificates.', transformedCerts.length);
     res.json(transformedCerts);
   } catch (err) {
-    console.error('Error in getCertificates:', err); // Debug log
+    console.error('Error in getCertificates:', err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -160,6 +184,48 @@ export const softDeleteCertificate = async (req, res) => {
     res.json({ message: 'Certificate soft-deleted successfully' });
   } catch (err) {
     console.error('Error soft-deleting certificate:', err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const getCertificatesByRecipientId = async (req, res) => {
+  try {
+    const { recipientId } = req.params;
+    
+    // 1. Find the recipient user to get their email
+    const recipientUser = await User.findById(recipientId);
+    if (!recipientUser) {
+      return res.status(404).json({ message: 'Recipient user not found.' });
+    }
+
+    // 2. Find certificates matching the recipient's email
+    const certs = await Certificate.find({ 'recipient.email': recipientUser.email }).populate('issuer template');
+    
+    // Transform the data structure to match frontend expectations (similar to getCertificates)
+    const transformedCerts = certs.map(cert => {
+      const transformed = {
+        ...cert.toObject(),
+        recipientName: cert.recipient?.name,
+        recipientEmail: cert.recipient?.email,
+        recipientWalletAddress: cert.recipient?.walletAddress,
+        title: cert.metadata?.title,
+        description: cert.metadata?.description,
+        institutionName: cert.metadata?.institutionName,
+        institutionId: cert.metadata?.institutionId,
+        issuedOn: cert.issuedAt,
+        credentialId: cert.code,
+        verificationCode: cert.code,
+        transactionHash: cert.blockchainTx,
+        status: cert.status,
+        metadata: cert.metadata,
+        id: cert._id
+      };
+      return transformed;
+    });
+
+    res.json(transformedCerts);
+  } catch (err) {
+    console.error('Error in getCertificatesByRecipientId:', err);
     res.status(500).json({ message: err.message });
   }
 };

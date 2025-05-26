@@ -1,4 +1,5 @@
 import Recipient from '../models/Recipient.js';
+import Certificate from '../models/Certificate.js';
 
 export const createRecipient = async (req, res) => {
   try {
@@ -12,9 +13,16 @@ export const createRecipient = async (req, res) => {
 
 export const getRecipients = async (req, res) => {
   try {
-    const recipients = await Recipient.find().populate('addedBy');
-    res.json(recipients);
+    const recipients = await Recipient.find().populate('addedBy').lean();
+
+    const recipientsWithCount = await Promise.all(recipients.map(async (recipient) => {
+      const certificateCount = await Certificate.countDocuments({ 'recipient.email': recipient.email });
+      return { ...recipient, certificateCount };
+    }));
+
+    res.json(recipientsWithCount);
   } catch (err) {
+    console.error('Error in getRecipients:', err);
     res.status(500).json({ message: err.message });
   }
 };
