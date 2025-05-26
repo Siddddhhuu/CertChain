@@ -36,15 +36,15 @@ const Recipients: React.FC = () => {
       try {
         setIsLoading(true);
         const users = await userService.getAllUsers(); // Fetch real users
-        // Map user data to Recipient interface (adjust as needed based on your User model)
+        // Map user data to Recipient interface
         const recipientsData: Recipient[] = users.map(user => ({
           id: user.id,
-          name: user.email, // Assuming user object has a name or use email
+          name: user.name || user.email, // Use name if available, otherwise email
           email: user.email,
-          walletAddress: user.walletAddress || '', // Assuming user object has walletAddress
-          certificatesCount: 0, // We don't have this data from the user endpoint
-          status: 'active', // Assuming all fetched users are active
-          // lastCertificateDate: undefined // We don't have this data
+          walletAddress: user.walletAddress || '',
+          certificatesCount: user.certificatesCount || 0, // Use the count from the backend
+          status: 'active', // Assuming all fetched users are active based on the current backend
+          // lastCertificateDate: user.lastCertificateDate ? new Date(user.lastCertificateDate) : undefined, // If your backend provides this
         }));
         setRecipients(recipientsData);
       } catch (error) {
