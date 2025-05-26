@@ -27,6 +27,7 @@ import ContactMessages from './pages/admin/ContactMessages';
 import CreateTemplate from './pages/admin/CreateTemplate';
 import EditTemplate from './pages/admin/EditTemplate';
 import PreviewTemplate from './pages/admin/PreviewTemplate';
+import Footer from './components/layout/Footer';
 
 
 // Auth Guard component to protect routes
@@ -69,10 +70,10 @@ function App() {
     <AuthProvider>
       <Web3Provider>
         <Router>
-          <div className="min-h-screen bg-gray-100">
+          <div className="min-h-screen bg-gray-100 flex flex-col">
             <Navbar />
-            <NetworkWarning /> {/* ✅ Inserting the warning banner here */}
-            <main>
+            <NetworkWarning />
+            <main className="flex-grow">
               <Routes>
                 {/* Public routes */}
                 <Route path="/" element={<Home />} />
@@ -117,7 +118,7 @@ function App() {
                     <PrivateRoute requiredRole="admin">
                       <AdminDashboard />
                     </PrivateRoute>
-                  } 
+                  }
                 />
                 <Route 
                   path="/admin/certificates/new" 
@@ -125,7 +126,7 @@ function App() {
                     <PrivateRoute requiredRole="admin">
                       <IssueCertificate />
                     </PrivateRoute>
-                  } 
+                  }
                 />
                 <Route 
                   path="/admin/certificates"
@@ -141,7 +142,7 @@ function App() {
                     <PrivateRoute requiredRole="admin">
                       <Template />
                     </PrivateRoute>
-                  } 
+                  }
                 />
                 <Route 
                   path="/admin/templates/new"
@@ -173,7 +174,7 @@ function App() {
                     <PrivateRoute requiredRole="admin">
                       <AddRecipient />
                     </PrivateRoute>
-                  } 
+                  }
                 />
                 <Route 
                   path="/admin/recipients/:id"
@@ -181,7 +182,7 @@ function App() {
                     <PrivateRoute requiredRole="admin">
                       <AdminRecipientDetail />
                     </PrivateRoute>
-                  } 
+                  }
                 />
                 <Route 
                   path="/admin/recipients/:id/certificates"
@@ -189,7 +190,7 @@ function App() {
                     <PrivateRoute requiredRole="admin">
                       <AdminRecipientCertificates />
                     </PrivateRoute>
-                  } 
+                  }
                 />
                 <Route 
                   path="/admin/recipients" 
@@ -197,7 +198,7 @@ function App() {
                     <PrivateRoute requiredRole="admin">
                       <Recipients />
                     </PrivateRoute>
-                  } 
+                  }
                 />
                 <Route 
                   path="/admin/wallet" 
@@ -205,7 +206,7 @@ function App() {
                     <PrivateRoute requiredRole="admin">
                       <WalletPage />
                     </PrivateRoute>
-                  } 
+                  }
                 />
                 <Route
                   path="/admin/contact-messages"
@@ -220,6 +221,7 @@ function App() {
                 <Route path="*" element={<Navigate to="/" />} />
               </Routes>
             </main>
+            <Footer />
           </div>
         </Router>
       </Web3Provider>
