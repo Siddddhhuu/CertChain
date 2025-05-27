@@ -4,7 +4,9 @@ import adminAuth from '../middleware/adminAuth.js';
 
 const router = express.Router();
 
-router.post('/signup', signup);
+router.post('/signup', (req, res) => {
+    res.json({ message: 'Signup route hit' });
+  });
 router.post('/login', login);
 
 router.post('/create-admin', adminAuth, createAdmin);
