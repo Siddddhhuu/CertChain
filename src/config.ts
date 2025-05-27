@@ -1,1 +1,1 @@
-export const API_BASE_URL = 'http://localhost:5000'; // Backend server runs on port 5000 
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://cert-chain-backend.vercel.app'; 
