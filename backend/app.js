@@ -1,6 +1,10 @@
 import { config as dotenvConfig } from 'dotenv';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import config from './config.js';
 
 // Get the directory name
 const __filename = fileURLToPath(import.meta.url);
@@ -10,26 +14,6 @@ const __dirname = path.dirname(__filename);
 const envPath = path.join(__dirname, '.env');
 console.log('Loading environment variables from:', envPath);
 dotenvConfig({ path: envPath });
-
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import config from './config.js';
-
-// Detailed environment variable logging
-console.log('=== Environment Variables Check ===');
-console.log('Current working directory:', process.cwd());
-console.log('Environment file path:', envPath);
-console.log('Environment variables loaded:', {
-  NODE_ENV: process.env.NODE_ENV,
-  PORT: process.env.PORT,
-  SMTP_USER: process.env.SMTP_USER,
-  SMTP_PASS: process.env.SMTP_PASS ? 'configured' : 'not configured',
-  SMTP_FROM: process.env.SMTP_FROM,
-  FRONTEND_URL: process.env.FRONTEND_URL,
-  MONGODB_URI: process.env.MONGODB_URI ? 'configured' : 'not configured',
-});
-console.log('================================');
 
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
@@ -42,33 +26,36 @@ import contactRoutes from './routes/contact.js';
 const app = express();
 
 // CORS configuration
-app.use(cors({
-  origin: [config.frontendUrl, 'http://localhost:5173'],
+const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = [config.frontendUrl, 'http://localhost:5173'];
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
   exposedHeaders: ['Content-Range', 'X-Content-Range'],
   credentials: true,
   preflightContinue: false,
   optionsSuccessStatus: 204
-}));
+};
+
+// Apply CORS middleware
+app.use(cors(corsOptions));
 
 // Handle preflight requests
-app.options('*', cors());
+app.options('*', cors(corsOptions));
 
-// Add error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ 
-    error: 'Something went wrong!',
-    message: config.nodeEnv === 'development' ? err.message : undefined
-  });
-});
-
+// Body parsing middleware
 app.use(express.json());
 
 // Serve static files from the uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/certificates', certificateRoutes);
@@ -77,14 +64,31 @@ app.use('/api/transactions', transactionRoutes);
 app.use('/api/recipients', recipientRoutes);
 app.use('/api/contact', contactRoutes);
 
-mongoose.connect(config.mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    app.listen(config.port, () => {
-      console.log(`Server running on port ${config.port}`);
-    });
-  })
-  .catch(err => {
-    console.error('MongoDB connection error:', err);
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(err.status || 500).json({
+    error: err.message || 'Something went wrong!',
+    stack: config.nodeEnv === 'development' ? err.stack : undefined
   });
+});
+
+// Connect to MongoDB and start server
+mongoose.connect(config.mongoUri, { 
+  useNewUrlParser: true, 
+  useUnifiedTopology: true 
+})
+.then(() => {
+  console.log('Connected to MongoDB');
+  const port = config.port;
+  app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+    console.log(`Frontend URL: ${config.frontendUrl}`);
+  });
+})
+.catch(err => {
+  console.error('MongoDB connection error:', err);
+  process.exit(1);
+});
 
 export default app;
