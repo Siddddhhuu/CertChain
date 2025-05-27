@@ -43,7 +43,7 @@ const app = express();
 
 // CORS configuration
 app.use(cors({
-  origin: ['https://cert-chain-sable.vercel.app', 'http://localhost:5173'],
+  origin: [config.frontendUrl, 'http://localhost:5173'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
   exposedHeaders: ['Content-Range', 'X-Content-Range'],
@@ -54,6 +54,15 @@ app.use(cors({
 
 // Handle preflight requests
 app.options('*', cors());
+
+// Add error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ 
+    error: 'Something went wrong!',
+    message: config.nodeEnv === 'development' ? err.message : undefined
+  });
+});
 
 app.use(express.json());
 
