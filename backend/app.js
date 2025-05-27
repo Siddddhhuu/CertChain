@@ -15,6 +15,7 @@ const envPath = path.join(__dirname, '.env');
 console.log('Loading environment variables from:', envPath);
 dotenvConfig({ path: envPath });
 
+// Import routes
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
 import certificateRoutes from './routes/certificates.js';
@@ -25,11 +26,11 @@ import contactRoutes from './routes/contact.js';
 
 const app = express();
 
-// CORS configuration
+// ✅ CORS configuration
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [config.frontendUrl, 'http://localhost:5173'];
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -42,6 +43,10 @@ const corsOptions = {
   preflightContinue: false,
   optionsSuccessStatus: 204
 };
+
+// ✅ Apply CORS and preflight handler
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));  // Handles CORS preflight
 
 // Body parsing middleware
 app.use(express.json());
@@ -68,20 +73,20 @@ app.use((err, req, res, next) => {
 });
 
 // Connect to MongoDB and start server
-mongoose.connect(config.mongoUri, { 
-  useNewUrlParser: true, 
-  useUnifiedTopology: true 
+mongoose.connect(config.mongoUri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 })
 .then(() => {
-  console.log('Connected to MongoDB');
+  console.log('✅ Connected to MongoDB');
   const port = config.port;
   app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-    console.log(`Frontend URL: ${config.frontendUrl}`);
+    console.log(` Server running on port ${port}`);
+    console.log(` Frontend URL allowed by CORS: ${config.frontendUrl}`);
   });
 })
 .catch(err => {
-  console.error('MongoDB connection error:', err);
+  console.error(' MongoDB connection error:', err);
   process.exit(1);
 });
 
