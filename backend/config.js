@@ -25,7 +25,7 @@ const config = {
   mongoUri: process.env.MONGO_URI,
   jwtSecret: process.env.JWT_SECRET,
   port: process.env.PORT || 5000,
-  frontendUrl: process.env.FRONTEND_URL || 'https://cert-chain-sable.vercel.app',
+  frontendUrl: process.env.FRONTEND_URL || 'https://cert-chain-seven.vercel.app',
   nodeEnv: process.env.NODE_ENV || 'production',
   smtp: {
     user: process.env.SMTP_USER,
