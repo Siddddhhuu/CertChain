@@ -28,19 +28,10 @@ const app = express();
 
 // ✅ CORS configuration
 const corsOptions = {
-  origin: function (origin, callback) {
-    const allowedOrigins = [config.frontendUrl, 'http://localhost:5173'];
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: config.frontendUrl,  // https://cert-chain-sable.vercel.app
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
-  exposedHeaders: ['Content-Range', 'X-Content-Range'],
-  credentials: true,
-  preflightContinue: false,
   optionsSuccessStatus: 204
 };
 
