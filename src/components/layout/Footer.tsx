@@ -43,7 +43,7 @@ const Footer: React.FC = () => {
 
         {/* Copyright */}
         <div className="text-sm text-gray-500">
-          &copy; {year} CertChain. All rights reserved.
+          &copy; {year} CertChain. All rights reserved. Crafted with ❤️
         </div>
       </div>
     </footer>
