@@ -6,7 +6,7 @@ import { generateMockCertificate } from '../utils/mockData';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
-const API_URL = `${API_BASE_URL}/api/certificates`;
+const API_URL = '/api/certificates';
 
 // Mock database for local development
 let mockCertificates: Certificate[] = [];
