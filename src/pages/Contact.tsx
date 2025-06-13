@@ -27,7 +27,7 @@ const Contact: React.FC = () => {
       });
 
       if (response.ok) {
-        console.log('Contact message sent successfully!');
+        // console.log('Contact message sent successfully!');
         alert('Your message has been sent successfully!'); // Or show a more styled success message
         setFormData({ name: '', email: '', message: '', }); // Reset form
       } else {

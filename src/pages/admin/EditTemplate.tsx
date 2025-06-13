@@ -45,9 +45,9 @@ const EditTemplate: React.FC = () => {
       }
       try {
         setIsLoading(true);
-        console.log(`Fetching template with ID: ${id}`);
+        // console.log(`Fetching template with ID: ${id}`);
         const fetchedTemplate = await templateService.getTemplateById(id);
-        console.log('Fetched template:', fetchedTemplate);
+        // console.log('Fetched template:', fetchedTemplate);
         setTemplate(fetchedTemplate);
         reset(fetchedTemplate);
       } catch (err: any) {
@@ -68,7 +68,7 @@ const EditTemplate: React.FC = () => {
     }
      setIsLoading(true);
     try {
-      console.log('Submitting updated template:', data);
+      // console.log('Submitting updated template:', data);
       const updateData = {
         name: data.name,
         description: data.description,
@@ -80,7 +80,7 @@ const EditTemplate: React.FC = () => {
         design: data.design,
       };
       await templateService.updateTemplate(id, updateData);
-      console.log('Template updated successfully!');
+      // console.log('Template updated successfully!');
       alert('Template updated successfully!');
       navigate('/admin/templates');
     } catch (error) {

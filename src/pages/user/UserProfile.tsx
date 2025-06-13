@@ -40,9 +40,9 @@ const UserProfile: React.FC = () => {
     const fetchUserProfile = async () => {
       try {
         setIsLoading(true);
-        console.log('Fetching profile for user:', authState.user); // Debug log
+        // console.log('Fetching profile for user:', authState.user); // Debug log
         const data = await userService.getUserById(authState.user!.id);
-        console.log('Fetched profile data:', data); // Debug log
+        // console.log('Fetched profile data:', data); // Debug log
         setUserProfile(data);
         setFormData(data);
       } catch (err) {
@@ -81,7 +81,7 @@ const UserProfile: React.FC = () => {
     }
 
     setIsSaving(true);
-    console.log('Attempting to save profile for user ID:', userProfile.id);
+    // console.log('Attempting to save profile for user ID:', userProfile.id);
     try {
       const updatedProfile = await userService.updateUser(userProfile.id, formData);
       setUserProfile(updatedProfile);
@@ -100,13 +100,13 @@ const UserProfile: React.FC = () => {
     const file = e.target.files?.[0];
     if (!file || !userProfile) return;
 
-    console.log('Current userProfile:', userProfile); // Debug log
+    // console.log('Current userProfile:', userProfile); // Debug log
 
     try {
       setIsUploading(true);
-      console.log('Uploading profile picture for user ID:', userProfile.id); // Debug log
+      // console.log('Uploading profile picture for user ID:', userProfile.id); // Debug log
       const updatedUser = await userService.uploadProfilePicture(userProfile.id, file);
-      console.log('Updated user after upload:', updatedUser); // Debug log
+      // console.log('Updated user after upload:', updatedUser); // Debug log
       setUserProfile(updatedUser);
       setFormData(updatedUser);
       alert('Profile picture updated successfully!');

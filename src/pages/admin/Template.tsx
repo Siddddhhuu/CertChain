@@ -19,15 +19,15 @@ const Template: React.FC = () => {
   useEffect(() => {
     const loadTemplates = async () => {
       try {
-        console.log('Fetching templates...');
+        // console.log('Fetching templates...');
         const fetchedTemplates = await templateService.getAllTemplates();
-        console.log('Templates fetched successfully:', fetchedTemplates);
+        // console.log('Templates fetched successfully:', fetchedTemplates);
         setTemplates(fetchedTemplates);
       } catch (error) {
         console.error('Error loading templates:', error);
       } finally {
         setIsLoading(false);
-        console.log('Template loading finished.');
+        // console.log('Template loading finished.');
       }
     };
     
@@ -52,7 +52,7 @@ const Template: React.FC = () => {
   };
 
   const handleDuplicateTemplate = (id: string) => {
-    console.log('Duplicate template:', id);
+    // console.log('Duplicate template:', id);
     const template = templates.find(t => t.id === id);
     if (template) {
       const newTemplate = {
@@ -67,10 +67,10 @@ const Template: React.FC = () => {
   const handleDeleteTemplate = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this template?')) {
       try {
-        console.log('Attempting to delete template:', id);
+        // console.log('Attempting to delete template:', id);
         await templateService.deleteTemplate(id);
         setTemplates(templates.filter(t => t.id !== id));
-        console.log('Template deleted successfully', id);
+        // console.log('Template deleted successfully', id);
       } catch (error) {
         console.error('Failed to delete template:', error);
         alert('Failed to delete template.');
@@ -79,7 +79,7 @@ const Template: React.FC = () => {
   };
 
   const handlePreviewTemplate = (id: string) => {
-    console.log('Preview template:', id);
+    // console.log('Preview template:', id);
     navigate(`/admin/templates/${id}/preview`);
   };
 

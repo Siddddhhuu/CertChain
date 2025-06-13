@@ -48,23 +48,23 @@ export const createAdmin = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log('Login attempt for email:', email);
+    // console.log('Login attempt for email:', email);
     // console.log('Received password (should not be logged in production!): ', password);
 
     const user = await User.findOne({ email });
-    console.log('User found:', !!user);
+    // console.log('User found:', !!user);
 
     if (!user) {
-      console.log('Login failed: User not found.');
+      // console.log('Login failed: User not found.');
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    console.log('Comparing password...');
+    // console.log('Comparing password...');
     const isMatch = await user.comparePassword(password);
-    console.log('Password match:', isMatch);
+    // console.log('Password match:', isMatch);
 
     if (!isMatch) {
-      console.log('Login failed: Password mismatch.');
+      // console.log('Login failed: Password mismatch.');
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
@@ -72,7 +72,7 @@ export const login = async (req, res) => {
     const payload = { id: user._id, role: user.role, email: user.email };
     const token = jwt.sign(payload, config.jwtSecret, { expiresIn: '7d' });
 
-    console.log('Login successful. Sending token and user info.');
+    // console.log('Login successful. Sending token and user info.');
     res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
   } catch (err) {
     console.error('Error in login controller:', err);
@@ -91,12 +91,12 @@ export const forgotPassword = async (req, res) => {
       });
     }
 
-    console.log('Processing forgot password request for email:', email);
+    // console.log('Processing forgot password request for email:', email);
     
     // Find user by email
     const user = await User.findOne({ email });
     if (!user) {
-      console.log('No user found with email:', email);
+      // console.log('No user found with email:', email);
       // For security reasons, don't reveal if the email exists or not
       return res.json({ 
         success: true, 
@@ -104,7 +104,7 @@ export const forgotPassword = async (req, res) => {
       });
     }
 
-    console.log('User found, generating reset token');
+    // console.log('User found, generating reset token');
     
     // Generate a random reset token
     const resetToken = crypto.randomBytes(32).toString('hex');
@@ -119,11 +119,11 @@ export const forgotPassword = async (req, res) => {
     user.resetPasswordExpires = Date.now() + 3600000;
     
     await user.save();
-    console.log('Reset token saved to user document');
+    // console.log('Reset token saved to user document');
 
     // Create reset URL
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-    console.log('Reset URL generated:', resetUrl);
+    // console.log('Reset URL generated:', resetUrl);
 
     // Send email with reset link
     const message = `
@@ -135,13 +135,13 @@ export const forgotPassword = async (req, res) => {
     `;
 
     try {
-      console.log('Attempting to send reset email');
+      // console.log('Attempting to send reset email');
       await sendEmail({
         email: user.email,
         subject: 'Password Reset Request',
         message,
       });
-      console.log('Reset email sent successfully');
+      // console.log('Reset email sent successfully');
 
       res.json({ 
         success: true, 
@@ -154,7 +154,7 @@ export const forgotPassword = async (req, res) => {
       user.resetPasswordToken = undefined;
       user.resetPasswordExpires = undefined;
       await user.save();
-      console.log('Reset token cleared due to email sending failure');
+      // console.log('Reset token cleared due to email sending failure');
 
       return res.status(500).json({ 
         success: false, 

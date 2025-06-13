@@ -66,9 +66,9 @@ const CreateTemplate: React.FC = () => {
         institutionId: data.institutionId,
       };
       
-      console.log('Submitting new template:', newTemplate);
+      // console.log('Submitting new template:', newTemplate);
       await templateService.createTemplate(newTemplate);
-      console.log('Template created successfully!');
+      // console.log('Template created successfully!');
       alert('Template created successfully!');
       navigate('/admin/templates');
     } catch (error) {

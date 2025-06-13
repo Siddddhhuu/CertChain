@@ -8,16 +8,16 @@ const ContactMessages: React.FC = () => {
 
   useEffect(() => {
     const fetchMessages = async () => {
-      console.log('Fetching contact messages...');
+      // console.log('Fetching contact messages...');
       try {
         const data = await getAllContactMessages();
-        console.log('Contact messages fetched successfully:', data);
+        // console.log('Contact messages fetched successfully:', data);
         setMessages(data);
       } catch (err: any) {
         console.error('Error fetching contact messages:', err);
         setError(err.message || 'Failed to fetch contact messages');
       } finally {
-        console.log('Contact message fetch process finished.');
+        // console.log('Contact message fetch process finished.');
         setLoading(false);
       }
     };
@@ -30,7 +30,7 @@ const ContactMessages: React.FC = () => {
       try {
         await softDeleteContactMessage(id);
         setMessages(messages.filter(message => message._id !== id));
-        console.log('Message soft-deleted successfully', id);
+        // console.log('Message soft-deleted successfully', id);
       } catch (error) {
         console.error('Failed to soft-delete message:', error);
         alert('Failed to delete message.');

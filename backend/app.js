@@ -12,7 +12,7 @@ const __dirname = path.dirname(__filename);
 
 // Load environment variables from the correct path
 const envPath = path.join(__dirname, '.env');
-console.log('Loading environment variables from:', envPath);
+// console.log('Loading environment variables from:', envPath);
 dotenvConfig({ path: envPath });
 
 // Import routes
@@ -28,7 +28,7 @@ const app = express();
 
 // ✅ CORS configuration
 const corsOptions = {
-  origin: config.frontendUrl,  // https://cert-chain-sable.vercel.app
+  origin: config.frontendUrl, 
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],

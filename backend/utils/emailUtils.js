@@ -11,13 +11,13 @@ const __dirname = path.dirname(__filename);
 dotenvConfig({ path: path.join(__dirname, '..', '.env') });
 
 // Detailed SMTP configuration logging
-console.log('=== SMTP Configuration Check ===');
-console.log('Environment file path:', path.join(__dirname, '..', '.env'));
-console.log('SMTP Configuration:', {
-  user: process.env.SMTP_USER,
-  pass: process.env.SMTP_PASS ? 'configured' : 'not configured',
-  from: process.env.SMTP_FROM,
-});
+// console.log('=== SMTP Configuration Check ===');
+// console.log('Environment file path:', path.join(__dirname, '..', '.env'));
+// console.log('SMTP Configuration:', {
+//   user: process.env.SMTP_USER,
+//   pass: process.env.SMTP_PASS ? 'configured' : 'not configured',
+//   from: process.env.SMTP_FROM,
+// });
 
 // Create reusable transporter object using SMTP transport
 const transporter = nodemailer.createTransport({
@@ -45,7 +45,7 @@ transporter.verify(function(error, success) {
     });
     console.error('=============================');
   } else {
-    console.log('SMTP Server is ready to take our messages');
+    // console.log('SMTP Server is ready to take our messages');
   }
 });
 
@@ -74,9 +74,9 @@ export const sendEmail = async ({ email, subject, message }) => {
       text: message,
     };
 
-    console.log('Attempting to send email to:', email);
+    // console.log('Attempting to send email to:', email);
     const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully:', info.messageId);
+    // console.log('Email sent successfully:', info.messageId);
     return info;
   } catch (error) {
     console.error('=== Email Sending Error ===');

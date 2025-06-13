@@ -21,9 +21,9 @@ const PreviewTemplate: React.FC = () => {
       }
       try {
         setIsLoading(true);
-        console.log(`Fetching template with ID: ${id}`);
+        // console.log(`Fetching template with ID: ${id}`);
         const fetchedTemplate = await templateService.getTemplateById(id);
-        console.log('Fetched template:', fetchedTemplate);
+        // console.log('Fetched template:', fetchedTemplate);
         setTemplate(fetchedTemplate);
       } catch (err: any) {
         console.error('Error fetching template:', err);

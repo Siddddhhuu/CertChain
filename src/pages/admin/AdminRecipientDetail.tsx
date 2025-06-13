@@ -19,7 +19,7 @@ const AdminRecipientDetail: React.FC = () => {
   // TODO: Fetch recipient/user details based on the ID
   useEffect(() => {
     if (id) {
-      console.log('Fetching details for recipient ID:', id);
+      // console.log('Fetching details for recipient ID:', id);
       // Call backend API to get user details
       // userService.getUserById(id).then(data => { ... });
     }

@@ -42,7 +42,7 @@ export const getUsers = async (req, res) => {
     // For each user, count the number of certificates they have received
     const usersWithCertCount = await Promise.all(users.map(async (user) => {
       const certificatesCount = await Certificate.countDocuments({ 'recipient.email': user.email });
-      console.log(`User: ${user.email}, Certificates Count: ${certificatesCount}`); // Added log for count
+      // console.log(`User: ${user.email}, Certificates Count: ${certificatesCount}`); // Added log for count
       // Explicitly add the id field
       const userData = { ...user, certificatesCount };
       userData.id = user._id.toString();
@@ -50,7 +50,7 @@ export const getUsers = async (req, res) => {
       return userData;
     }));
 
-    console.log('Sending users with certificate count:', usersWithCertCount); // Added log for final data
+    // console.log('Sending users with certificate count:', usersWithCertCount); // Added log for final data
     res.json(usersWithCertCount);
   } catch (err) {
     console.error('Error in getUsers:', err); // Added logging
@@ -61,13 +61,13 @@ export const getUsers = async (req, res) => {
 // Get a single user by ID
 export const getUser = async (req, res) => {
   try {
-    console.log('Getting user with ID:', req.params.id); // Debug log
+    // console.log('Getting user with ID:', req.params.id); // Debug log
     const user = await User.findById(req.params.id).select('-password');
     if (!user) {
-      console.log('User not found with ID:', req.params.id); // Debug log
+      // console.log('User not found with ID:', req.params.id); // Debug log
       return res.status(404).json({ message: 'User not found' });
     }
-    console.log('Found user:', user); // Debug log
+    // console.log('Found user:', user); // Debug log
     // Transform the data to include id field as a string and full profilePictureUrl
     const userData = user.toObject();
     userData.id = userData._id.toString(); // Convert ObjectId to string
@@ -76,7 +76,7 @@ export const getUser = async (req, res) => {
     if (userData.profilePictureUrl) {
       userData.profilePictureUrl = `http://localhost:5000${userData.profilePictureUrl}`; // Assuming backend runs on port 5000
     }
-    console.log('Transformed user data:', userData); // Debug log
+    // console.log('Transformed user data:', userData); // Debug log
     res.json(userData);
   } catch (err) {
     console.error('Error in getUser:', err); // Debug log
@@ -87,8 +87,8 @@ export const getUser = async (req, res) => {
 // Update a user by ID
 export const updateUser = async (req, res) => {
   try {
-    console.log('Updating user with ID:', req.params.id);
-    console.log('Update data:', req.body);
+    // console.log('Updating user with ID:', req.params.id);
+    // console.log('Update data:', req.body);
     
     const user = await User.findByIdAndUpdate(
       req.params.id,
@@ -97,7 +97,7 @@ export const updateUser = async (req, res) => {
     ).select('-password');
     
     if (!user) {
-      console.log('User not found with ID:', req.params.id);
+      // console.log('User not found with ID:', req.params.id);
       return res.status(404).json({ message: 'User not found' });
     }
     
@@ -109,7 +109,7 @@ export const updateUser = async (req, res) => {
     if (userData.profilePictureUrl) {
       userData.profilePictureUrl = `http://localhost:5000${userData.profilePictureUrl}`; // Assuming backend runs on port 5000
     }
-    console.log('Updated user data:', userData);
+    // console.log('Updated user data:', userData);
     res.json(userData);
   } catch (err) {
     console.error('Error updating user:', err);
@@ -131,20 +131,20 @@ export const deleteUser = async (req, res) => {
 // Create a new user
 export const createUser = async (req, res) => {
   try {
-    console.log('Received data for creating user:', req.body); // Log incoming data
+    // console.log('Received data for creating user:', req.body); // Log incoming data
     const { name, email, walletAddress, password, role } = req.body; // Assuming these fields are sent
     
     // Basic validation (add more as needed)
     if (!email || !password) {
-      console.log('Validation failed: Email or password missing'); // Log validation fail
+      // console.log('Validation failed: Email or password missing'); // Log validation fail
       return res.status(400).json({ message: 'Email and password are required' });
     }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
-    console.log('Existing user check result:', existingUser); // Log existing user check
+    // console.log('Existing user check result:', existingUser); // Log existing user check
     if (existingUser) {
-      console.log('User with email already exists:', email); // Log existing user found
+      // console.log('User with email already exists:', email); // Log existing user found
       return res.status(400).json({ message: 'User with that email already exists' });
     }
 
@@ -156,9 +156,9 @@ export const createUser = async (req, res) => {
       role: role || 'user', // Default role to user if not provided
     });
 
-    console.log('New User object before saving:', user); // Log user object before save
+    // console.log('New User object before saving:', user); // Log user object before save
     await user.save();
-    console.log('User saved successfully:', user); // Log successful save
+    // console.log('User saved successfully:', user); // Log successful save
 
     // Return user data without the password
     const userResponse = user.toObject();
@@ -201,7 +201,7 @@ export const uploadProfilePicture = async (req, res) => {
     if (userData.profilePictureUrl) {
       userData.profilePictureUrl = `http://localhost:5000${userData.profilePictureUrl}`; // Assuming backend runs on port 5000
     }
-    console.log('Updated user data after profile picture upload:', userData);
+    // console.log('Updated user data after profile picture upload:', userData);
     res.json(userData);
   } catch (err) {
     console.error('Error uploading profile picture:', err);

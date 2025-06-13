@@ -34,9 +34,9 @@ const AdminRecipientCertificates: React.FC = () => {
       try {
         setIsLoading(true);
         setError(null);
-        console.log('Fetching certificates for recipient ID:', id);
+        // console.log('Fetching certificates for recipient ID:', id);
         const data = await certificateService.getCertificatesByRecipientId(id);
-        console.log('Fetched recipient certificates:', data);
+        // console.log('Fetched recipient certificates:', data);
         setCertificates(data);
       } catch (err: any) {
         console.error('Error fetching recipient certificates:', err);

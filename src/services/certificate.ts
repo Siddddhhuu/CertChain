@@ -143,7 +143,7 @@ export const certificateService = {
   // Download a certificate as a PDF
   async downloadCertificate(id: string): Promise<void> {
     try {
-      console.log('Attempting to download certificate with ID:', id); // Log start
+      // console.log('Attempting to download certificate with ID:', id); // Log start
       // 1. Get certificate element
       const certificateElement = document.getElementById('certificate-view');
       if (!certificateElement) {
@@ -151,28 +151,28 @@ export const certificateService = {
         throw new Error('Certificate element not found for PDF generation.');
       }
 
-      console.log('Certificate element found.', certificateElement); // Log element found
+      // console.log('Certificate element found.', certificateElement); // Log element found
 
       // 2. Convert to canvas
-      console.log('Converting element to canvas...'); // Log canvas conversion start
+      // console.log('Converting element to canvas...'); // Log canvas conversion start
       const canvas = await html2canvas(certificateElement, { scale: 2 }); // Increase scale for better resolution
-      console.log('Element converted to canvas.', canvas); // Log canvas conversion end
+      // console.log('Element converted to canvas.', canvas); // Log canvas conversion end
       const imgData = canvas.toDataURL('image/png');
 
       // 3. Create PDF
-      console.log('Creating PDF from canvas...'); // Log PDF creation start
+      // console.log('Creating PDF from canvas...'); // Log PDF creation start
       const pdf = new jsPDF('l', 'mm', 'a4'); // 'l' for landscape, 'mm' for millimeters, 'a4' for A4 size
       const imgWidth = 297; // A4 landscape width in mm
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
       pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-      console.log('PDF created.'); // Log PDF creation end
+      // console.log('PDF created.'); // Log PDF creation end
 
       // 4. Trigger download
-      console.log('Triggering PDF download.'); // Log download trigger
+      // console.log('Triggering PDF download.'); // Log download trigger
       pdf.save(`certificate-${id}.pdf`);
 
-      console.log('Certificate download process finished for ID:', id); // Log end
+      // console.log('Certificate download process finished for ID:', id); // Log end
     } catch (error) {
       console.error('Error generating or downloading certificate PDF:', error); // Log error with details
       throw new Error('Failed to download certificate PDF.');

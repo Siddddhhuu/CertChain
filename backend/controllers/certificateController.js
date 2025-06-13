@@ -16,25 +16,25 @@ export const getCertificates = async (req, res) => {
     const userId = req.user.id;
     const userRole = req.user.role;
 
-    console.log('getCertificates called.');
-    console.log('Authenticated user:', req.user);
-    console.log('User ID:', userId);
-    console.log('User Role:', userRole);
+    // console.log('getCertificates called.');
+    // console.log('Authenticated user:', req.user);
+    // console.log('User ID:', userId);
+    // console.log('User Role:', userRole);
 
     let certs;
     if (userRole === 'admin') {
-      console.log('Fetching all certificates for admin...');
+      // console.log('Fetching all certificates for admin...');
       // Admin can see all certificates
       certs = await Certificate.find().populate('issuer template');
-      console.log('Fetched certificates count (admin):', certs.length);
+      // console.log('Fetched certificates count (admin):', certs.length);
     } else {
-      console.log('Fetching certificates for regular user...');
+      // console.log('Fetching certificates for regular user...');
       // Regular users can only see their own certificates
       certs = await Certificate.find({
         'recipient.email': req.user.email,
         deletedByUsers: { $ne: userId }
       }).populate('issuer template');
-       console.log('Fetched certificates count (user):', certs.length);
+      //  console.log('Fetched certificates count (user):', certs.length);
     }
 
     // Transform the data structure to match frontend expectations
@@ -58,7 +58,7 @@ export const getCertificates = async (req, res) => {
       };
       return transformed;
     });
-    console.log('Sending transformed certificates.', transformedCerts.length);
+    // console.log('Sending transformed certificates.', transformedCerts.length);
     res.json(transformedCerts);
   } catch (err) {
     console.error('Error in getCertificates:', err);
